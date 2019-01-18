@@ -1,0 +1,13 @@
+language: generic
+sudo: false
+addons:
+  apt:
+    packages:
+    - luarocks
+before_install:
+  - luarocks install --local luacheck && luarocks install --local busted
+script:
+- $HOME/.luarocks/bin/luacheck --no-color .
+- $HOME/.luarocks/bin/busted .
+notifications:
+  email: false

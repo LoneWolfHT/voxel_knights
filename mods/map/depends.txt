@@ -1,0 +1,9 @@
+default
+fire
+flowers
+doors
+stairs
+xpanes
+wool
+vessels
+crafting
