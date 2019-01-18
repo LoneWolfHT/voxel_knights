@@ -15,6 +15,5 @@ Mod licenses are in the mod folders. Any changes to mods will be listed here
 	* Reduce amount of armor slots
 	* Remove armor tab
 	* Disable unused armor
-	* Increase init delay
 * game | Changes mods:
 	* 3d_armor: Re-arrange armor layout
