@@ -5,7 +5,7 @@ game.register_mob("slime", {
 	view_range = 25,
 	speed = 3.5,
 	dmg = 4,
-	reach = 1.6,
+	reach = 1.5,
 	face_offset = 90,
 	animations = {
 		walk = {

@@ -59,14 +59,22 @@ end)
 
 minetest.register_on_joinplayer(function(player)
 	local inv = player:get_inventory()
+	local name = player:get_player_name()
 	local meta = player:get_meta()
 
 	if meta:get_string("location") == "dungeon" then
-		game.clear_mobs_near(player:get_pos(), 150)
+		if #game.parties == 0 or #game.parties[game.party[name]] <= 1 then
+			game.clear_mobs_near(player:get_pos(), 150)
+		end
 
-		player:set_pos(game.spawn_pos)
-		meta:set_string("location", "spawn")
+		if #game.parties ~= 0 then
+			game.parties[game.party[name]].name = nil
+			game.party[name] = nil
+		end
 	end
+
+	player:set_pos(game.spawn_pos)
+	meta:set_string("location", "spawn")
 
 	inv:set_size("storage", 8*6)
 	inv:set_size("xp", 1)
@@ -88,19 +96,42 @@ minetest.register_on_newplayer(function(player)
 end)
 
 minetest.register_on_leaveplayer(function(player)
-	game.clear_mobs_near(player:get_pos(), 150)
+	local name = player:get_player_name()
+	local meta = player:get_meta()
 
-	player:set_pos(game.spawn_pos)
-	player:get_meta():set_string("location", "spawn")
+	if meta:get_string("location") == "dungeon" then
+		if #game.parties[game.party[name]] <= 1 then
+			game.clear_mobs_near(player:get_pos(), 150)
+		end
+
+		game.parties[game.party[name]].name = nil
+		game.party[name] = nil
+	end
 end)
 
 minetest.register_on_respawnplayer(function(player)
-	game.clear_mobs_near(player:get_pos(), 150)
+	local name = player:get_player_name()
+	local meta = player:get_meta()
+
+	if meta:get_string("location") == "dungeon" then
+		if #game.parties[game.party[name]] <= 1 then
+			game.clear_mobs_near(player:get_pos(), 150)
+		end
+
+		game.parties[game.party[name]].name = nil
+		game.party[name] = nil
+	end
 
 	player:set_pos(game.spawn_pos)
-	player:get_meta():set_string("location", "spawn")
+	meta:set_string("location", "spawn")
 
 	return true
+end)
+
+minetest.register_on_punchplayer(function(_, hitter)
+	if hitter:is_player() == true then
+		return true
+	end
 end)
 
 armor.formspec = "image[3,0;2,4;armor_preview]"..

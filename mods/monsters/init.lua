@@ -155,7 +155,23 @@ function game.register_mob(name, def)
 end
 
 function game.on_monster_death(self, puncher)
+	for id, member in ipairs(game.parties[game.party[puncher:get_player_name()]]) do
+		local inv = minetest.get_player_name(member):get_inventory()
 
+		for drop, chance in pairs(self.drops) do
+			if math.random(1, chance) == 1 then
+				if not drop:find("xp:xp") then
+					if inv:room_for_item("main", drop) == true then
+						inv:add_item("main", drop)
+					elseif inv:room_for_item("storage", drop) == true then
+						inv:add_item("storage", drop)
+					end
+				else
+					inv:add_item("xp", drop)
+				end
+			end
+		end
+	end
 end
 
 dofile(minetest.get_modpath("monsters").."/monsters.lua")

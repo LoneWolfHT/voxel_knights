@@ -1,20 +1,28 @@
 game.dungeons = 0
 game.dungeon_start_pos = vector.new(-777, -777, -777)
 game.registered_dungeons = {}
+game.parties = {}
+game.partyid = 0
+game.party = {}
 
 function game.start_dungeon(player)
 	local meta = player:get_meta()
 	local pos = vector.multiply(game.dungeon_start_pos, game.dungeons+1)
 	local name = game.get_dungeon(meta:get_int("skill_level"))
+	local pname = player:get_player_name()
 
 	game.place_dungeon(name, pos)
 
 	local spawnpos = minetest.find_node_near(pos, 100, "map:spawn_pos")
 
 	if spawnpos then
+		game.dungeons = game.dungeons + 1
+		game.partyid = game.partyid + 1
 		player:set_pos(spawnpos)
 		minetest.remove_node(spawnpos)
 		meta:set_string("location", "dungeon");
+		game.party[pname] = game.partyid
+		game.parties[game.partyid] = {pname}
 	end
 end
 
@@ -67,7 +75,9 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		if fields.spawn then
 			game.clear_mobs_near(player:get_pos(), 150)
 			player:set_pos(game.spawn_pos)
+			player:set_hp(20)
 			meta:set_string("location", "spawn")
+			game.party[player:get_player_name()] = nil
 		elseif fields.deeper then
 			game.clear_mobs_near(player:get_pos(), 150)
 			game.start_dungeon(player)
