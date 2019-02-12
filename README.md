@@ -1,7 +1,8 @@
 # blocky_knights
 WIP Dungeon Exploring PvE game
 
-Mod licenses are in the mod folders. Any changes to mods will be listed here
+Mod licenses are in the mod folders. Any changes to mods will be listed here if I remember to.
+Please let me know if a mod has no license
 
 ### Modified Mods
 * crafting | Changes:
