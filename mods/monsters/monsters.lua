@@ -7,6 +7,11 @@ game.register_mob("slime", {
 	dmg = 4,
 	reach = 1.5,
 	face_offset = 90,
+	on_die = game.on_monster_death,
+	drops = {
+		["xp:xp"] = 1,
+		["xp:xp 2"] = 7,
+	},
 	animations = {
 		walk = {
 			range = {x = 0, y = 11},

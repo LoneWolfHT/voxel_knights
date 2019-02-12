@@ -1,4 +1,4 @@
-game.mob_step = 0.2
+game.mob_step = 0.5
 game.attack_step = 1
 
 function game.register_mob(name, def)
@@ -155,8 +155,15 @@ function game.register_mob(name, def)
 end
 
 function game.on_monster_death(self, puncher)
-	for id, member in ipairs(game.parties[game.party[puncher:get_player_name()]]) do
-		local inv = minetest.get_player_name(member):get_inventory()
+	for member, _ in pairs(game.parties[game.party[puncher:get_player_name()]]) do
+		local pmember = minetest.get_player_by_name(member)
+
+		if pmember == nil then
+			game.parties[game.party[member]].member = nil
+			game.party[member] = nil
+		end
+
+		local inv = pmember:get_inventory()
 
 		for drop, chance in pairs(self.drops) do
 			if math.random(1, chance) == 1 then

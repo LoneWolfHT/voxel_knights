@@ -74,6 +74,7 @@ minetest.register_on_joinplayer(function(player)
 	end
 
 	player:set_pos(game.spawn_pos)
+	player:set_hp(20)
 	meta:set_string("location", "spawn")
 
 	inv:set_size("storage", 8*6)
@@ -106,6 +107,7 @@ minetest.register_on_leaveplayer(function(player)
 
 		game.parties[game.party[name]].name = nil
 		game.party[name] = nil
+		player:set_hp(20)
 	end
 end)
 

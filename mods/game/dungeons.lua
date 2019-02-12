@@ -12,8 +12,9 @@ function game.start_dungeon(player)
 	local pname = player:get_player_name()
 
 	game.place_dungeon(name, pos)
+	game.clear_mobs_near(pos, 150)
 
-	local spawnpos = minetest.find_node_near(pos, 100, "map:spawn_pos")
+	local spawnpos = minetest.find_node_near(pos, 150, "map:spawn_pos")
 
 	if spawnpos then
 		game.dungeons = game.dungeons + 1
@@ -22,7 +23,7 @@ function game.start_dungeon(player)
 		minetest.remove_node(spawnpos)
 		meta:set_string("location", "dungeon");
 		game.party[pname] = game.partyid
-		game.parties[game.partyid] = {pname}
+		game.parties[game.partyid] = {[pname] = 1}
 	end
 end
 
@@ -71,17 +72,21 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if formname == "game:dform" then
 		local meta = player:get_meta()
 		local depth = meta:get_int("depth")
+		local name = player:get_player_name()
 
 		if fields.spawn then
 			game.clear_mobs_near(player:get_pos(), 150)
 			player:set_pos(game.spawn_pos)
 			player:set_hp(20)
 			meta:set_string("location", "spawn")
-			game.party[player:get_player_name()] = nil
+			game.party[name] = nil
+			game.parties[game.party[name]].name = nil
 		elseif fields.deeper then
 			game.clear_mobs_near(player:get_pos(), 150)
-			game.start_dungeon(player)
 			meta:set_int("depth", depth+1)
+			game.party[name] = nil
+			game.parties[game.party[name]].name = nil
+			game.start_dungeon(player)
 		end
 	end
 end)
