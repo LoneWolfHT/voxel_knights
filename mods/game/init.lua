@@ -16,17 +16,56 @@ minetest.register_item(":", {
 	tool_capabilities = {
 		full_punch_interval = 0.9,
 		max_drop_level = 0,
-		groupcaps = {diggable = {times={[1] = 1.0, [2] = 2.0, [3] = 3.0}, uses = 0, maxlevel = 3}},
+		groupcaps = {diggable = {times={[1] = 3, [2] = 6, [3] = 9}, uses = 0, maxlevel = 3}},
 		damage_groups = {fleshy=1},
 	}
 })
 
+function minetest.item_drop()
+    return
+end
+
+function game.clear_mobs_near(pos, radius)
+	for _, obj in ipairs(minetest.get_objects_inside_radius(pos, radius)) do
+		if not obj:is_player() and obj:get_luaentity().name:find("monsters:") then
+			obj:remove()
+		end
+	end
+end
+
+local step = 0
+minetest.register_globalstep(function(dtime)
+	step = step + dtime
+
+	if step >= 1 then
+		step = 0
+
+		for _, p in ipairs(minetest.get_connected_players()) do
+			local meta = p:get_meta()
+			local pos = p:get_pos()
+
+			if meta:get_string("location") == "dungeon" and
+			minetest.check_player_privs(p:get_player_name(), "creative") == false then
+				local npos = minetest.find_node_near(pos, 20, "group:spawner")
+				if npos ~= nil then
+					local node = minetest.get_node(npos)
+
+					minetest.registered_nodes[node.name].on_trigger(npos)
+				end
+			end
+		end
+	end
+end)
+
 minetest.register_on_joinplayer(function(player)
 	local inv = player:get_inventory()
+	local meta = player:get_meta()
 
-	if not player:get_attribute("location") == "spawn" then
-		player:set_attribute("location", "spawn")
+	if meta:get_string("location") == "dungeon" then
+		game.clear_mobs_near(player:get_pos(), 150)
+
 		player:set_pos(game.spawn_pos)
+		meta:set_string("location", "spawn")
 	end
 
 	inv:set_size("storage", 8*6)
@@ -34,12 +73,34 @@ minetest.register_on_joinplayer(function(player)
 end)
 
 minetest.register_on_newplayer(function(player)
-	player:set_attribute("location", "spawn")
+	local meta = player:get_meta()
 
-	if not modstorage:get_int("lobby_placed") == 1 then
-		modstorage:set_int("lobby_placed", 1)
-		map.place_lobby()
-	end
+	meta:set_string("location", "spawn")
+	meta:set_int("skill_level", 1)
+	meta:set_int("depth", 0)
+
+	minetest.after(1, function()
+		if modstorage:get_int("lobby_placed") ~= 1 then
+			modstorage:set_int("lobby_placed", 1)
+			map.place_lobby()
+		end
+	end)
+end)
+
+minetest.register_on_leaveplayer(function(player)
+	game.clear_mobs_near(player:get_pos(), 150)
+
+	player:set_pos(game.spawn_pos)
+	player:get_meta():set_string("location", "spawn")
+end)
+
+minetest.register_on_respawnplayer(function(player)
+	game.clear_mobs_near(player:get_pos(), 150)
+
+	player:set_pos(game.spawn_pos)
+	player:get_meta():set_string("location", "spawn")
+
+	return true
 end)
 
 armor.formspec = "image[3,0;2,4;armor_preview]"..
@@ -75,8 +136,9 @@ end
 
 sfinv.override_page("sfinv:crafting", {
 	title = "Main",
-	get = function(self, player, context)
+	get = function(_, player, context)
 		local inv = player:get_inventory()
+		local depth = player:get_meta():get_int("depth")
 		local xp = 0
 
 		if inv:contains_item("xp", "xp:xp") then
@@ -86,12 +148,12 @@ sfinv.override_page("sfinv:crafting", {
 		local formspec = armor:get_armor_formspec(player:get_player_name(), true)..
 			"list[detached:creative_trash;main;0,3.6;1,1;]" ..
 				"image[0.05,3.7;0.8,0.8;creative_trash_icon.png]" ..
-				("label[5,0.1;Experience: %d]"
-			):format(xp)
+				("label[5,0.1;Experience: %d]"):format(xp) ..
+				("label[5,0.6;Rooms Completed: %d]"):format(depth)
 
 		return sfinv.make_formspec(player, context, formspec, true)
 	end,
-	on_player_receive_fields = function(self, player, context, fields)
+	on_player_receive_fields = function(_, player, context, fields)
 		if crafting.result_select_on_receive_results(player, "inv", 1, context, fields) then
 			sfinv.set_player_inventory_formspec(player)
 		end

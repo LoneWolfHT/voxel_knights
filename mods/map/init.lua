@@ -14,27 +14,33 @@ function map.place_lobby()
 end
 
 for name, def in pairs(minetest.registered_nodes) do
-	if not name:find("with_berries") then
-		def.groups["unbreakable"] = 1
-		def.groups["cracky"] = nil
-		def.groups["crumbly"] = nil
-		def.groups["snappy"] = nil
-		def.groups["choppy"] = nil
-		def.groups["oddly_breakable_by_hand"] = nil
-		def.groups["dig_immediate"] = nil
-		def.groups["falling_node"] = nil
-		def.groups["flammable"] = nil
+	def.groups["unbreakable"] = 1
+	def.groups["cracky"] = nil
+	def.groups["crumbly"] = nil
+	def.groups["snappy"] = nil
+	def.groups["choppy"] = nil
+	def.groups["oddly_breakable_by_hand"] = nil
+	def.groups["dig_immediate"] = nil
+	def.groups["falling_node"] = nil
+	def.groups["flammable"] = nil
 
-		if name:find("door") or name:find("bed") then
+	if name:find("door") or name:find("bed") then
+		if name:find("door_steel") then
+			def.on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
+				local meta = clicker:get_meta()
+
+				if meta:get_string("location") == "spawn" then
+					game.start_dungeon(clicker)
+				elseif meta:get_string("location") == "dungeon" then
+					game.show_dungeon_form(clicker:get_player_name())
+				end
+			end
+		else
 			def.on_rightclick = nil
 		end
-
-		minetest.override_item(name, {groups = def.groups})
 	end
-end
 
-function minetest.item_drop()
-    return
+	minetest.override_item(name, {groups = def.groups})
 end
 
 minetest.register_tool("map:pickaxe", {
@@ -56,9 +62,20 @@ minetest.register_tool("map:pickaxe", {
 minetest.register_chatcommand("place_lobby", {
 	description = "Place the game lobby",
 	privs = {server = true},
-	func = function(name, param)
+	func = function(name)
 		map.place_lobby()
+		minetest.chat_send_player(name, "Lobby has been placed")
 	end
+})
+
+minetest.register_node("map:spawn_pos", {
+	description = "Spawn point",
+	drawtype = "airlike",
+	walkable = true,
+	pointable = true,
+	paramtype = "light",
+	sunlight_propagates = true,
+	inventory_image = "air.png^default_mese_crystal.png",
 })
 
 minetest.register_node("map:barrier", {
@@ -106,7 +123,7 @@ minetest.register_node("map:utility_table", {
 	paramtype2 = "facedir",
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
-		
+
 		meta:set_string("infotext", "Utility Table")
 	end,
 	on_rightclick = crafting.make_on_rightclick("inv", 2, {x = 8, y = 3})
@@ -133,7 +150,7 @@ minetest.register_node("map:storage", {
 				default.get_hotbar_bg(0,7))
 		meta:set_string("infotext", "Storage")
 	end,
-	on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
+	on_rightclick = function(pos)
 		local meta = minetest.get_meta(pos)
 
 		if meta:get_string("infotext") == "" then
@@ -164,7 +181,7 @@ minetest.register_node("map:cobweb", {
 	paramtype = "light",
 	sunlight_propagates = true,
 	walkable = false,
-	groups = {diggable = 2},
+	groups = {diggable = 3},
 })
 
 for i = 1, 3, 1 do

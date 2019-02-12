@@ -1,0 +1,161 @@
+game.mob_step = 0.2
+game.attack_step = 1
+
+function game.register_mob(name, def)
+	local ent = {
+		name = "monsters:"..name,
+		physical = def.physical or true,
+		pointable = def.pointable or true,
+		hp_max = def.hp,
+		hp = def.hp,
+		step_height = def.step_height or 1,
+		time = 0,
+		attack_time = 0,
+		drops = def.drops,
+		visual = "mesh",
+		mesh = def.mesh,
+        visual_size = def.visual_size or {x=1, y=1, z=1},
+		textures = {def.texture},
+		automatic_face_movement_dir = def.face_offset or 0,
+		collisionbox = def.collisionbox or {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
+		selection_box = def.selection_box or {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
+		collide_with_objects = def.collide_with_objects or true,
+        on_step = function(self, dtime)
+			local pos = self.object:get_pos()
+			local pos_up = pos
+			local obj = self.object
+
+			pos_up.y = pos_up.y + 1
+
+			self.time = self.time + dtime
+
+			if self.attack_time < game.attack_step then
+				self.attack_time = self.attack_time + dtime
+			end
+
+			if self.time >= game.mob_step then
+				self.time = 0
+
+				local sighted = false
+
+				for _, v in ipairs(minetest.get_objects_inside_radius(pos, def.view_range)) do
+					local ppos = v:get_pos()
+
+					ppos.y = ppos.y+1
+					if v:is_player() and v:get_hp() > 0 and minetest.line_of_sight(pos_up, ppos) == true then
+						local vel = vector.direction(pos, ppos)
+
+						vel.y = -9
+
+						sighted = true
+
+						if vector.distance(ppos, pos) >= def.reach then
+							obj:set_animation(def.animations.walk.range, def.animations.walk.speed)
+							obj:set_velocity(vector.multiply(vel, def.speed))
+						else
+							obj:set_animation(def.animations.attack.range, def.animations.attack.speed)
+
+							if vector.distance(ppos, pos) <= def.reach/2 then
+								obj:set_velocity(vector.new(0, 0, 0))
+							end
+
+							if self.attack_time >= game.attack_step then
+								self.attack_time = 0
+								v:punch(obj, 1, {damage_groups = {fleshy = def.dmg}}, nil)
+							end
+						end
+					end
+				end
+
+				if sighted == false then
+					obj:set_animation(def.animations.idle.range, def.animations.idle.speed)
+					obj:set_velocity(vector.new(0, 0, 0))
+				end
+			end
+		end,
+		on_punch = function(self, puncher, last_punch, tool, dir)
+			local pos = self.object:get_pos()
+
+			if def.on_punch then
+				def.on_punch(self, puncher, last_punch, tool, dir)
+			end
+
+			if (self.object:get_hp() - tool.damage_groups.fleshy) <= 0 then
+				if def.on_die then
+					def.on_die(self, puncher)
+				end
+
+				if def.animations.dead then
+					local body = minetest.add_entity(pos, "monsters:"..name.."_dead")
+					body:set_yaw(self.object:get_yaw())
+				end
+
+                self.object:remove()
+            end
+		end,
+	}
+
+	if def.animations.dead then
+		local ent_dead = {
+			physical = false,
+			timer = 0,
+			visual = "mesh",
+			mesh = def.mesh,
+			visual_size = {x=1, y=1, z=1},
+			textures = {def.texture},
+			collisionbox = {0, 0, 0, 0, 0, 0},
+			on_activate = function(self, _)
+				self.object:set_armor_groups({immortal=1})
+
+				self.object:set_animation(def.animations.dead.range, def.animations.dead.speed, 0.0, false)
+
+				minetest.after(2.5, function() self.object:remove() end)
+			end,
+		}
+
+		minetest.register_entity("monsters:"..name.."_dead", ent_dead)
+	end
+
+	minetest.register_entity("monsters:"..name, ent)
+
+	minetest.register_node("monsters:"..name.."_block", {
+		description = name.." spawner x1",
+		drawtype = "airlike",
+		walkable = true,
+		pointable = true,
+		paramtype = "light",
+		sunlight_propagates = true,
+		groups = {spawner = 1, unbreakable = 1},
+		inventory_image = "air.png^default_tool_mesesword.png",
+		on_trigger = function(pos)
+			minetest.remove_node(pos)
+			minetest.add_entity(pos, "monsters:"..name)
+		end
+	})
+
+	minetest.register_node("monsters:"..name.."_block_3", {
+		description = name.." spawner x3",
+		drawtype = "airlike",
+		walkable = true,
+		pointable = true,
+		paramtype = "light",
+		sunlight_propagates = true,
+		groups = {spawner = 1, unbreakable = 1},
+		inventory_image = "air.png^default_tool_mesesword.png",
+		on_trigger = function(pos)
+			minetest.remove_node(pos)
+			minetest.add_entity(pos, "monsters:"..name)
+			pos.x = pos.x + 1
+			minetest.add_entity(pos, "monsters:"..name)
+			pos.z = pos.z + 1
+			pos.x = pos.x - 1
+			minetest.add_entity(pos, "monsters:"..name)
+		end
+	})
+end
+
+function game.on_monster_death(self, puncher)
+
+end
+
+dofile(minetest.get_modpath("monsters").."/monsters.lua")
