@@ -71,11 +71,12 @@ minetest.register_on_joinplayer(function(player)
 			game.parties[game.party[name]].name = nil
 			game.party[name] = nil
 		end
+
+		player:set_pos(game.spawn_pos)
+		meta:set_string("location", "spawn")
 	end
 
-	player:set_pos(game.spawn_pos)
-	player:set_hp(20)
-	meta:set_string("location", "spawn")
+	player:set_hp(20, {type = "set_hp"})
 
 	inv:set_size("storage", 8*6)
 	inv:set_size("xp", 1)
@@ -107,7 +108,7 @@ minetest.register_on_leaveplayer(function(player)
 
 		game.parties[game.party[name]].name = nil
 		game.party[name] = nil
-		player:set_hp(20)
+		player:set_hp(20, {type = "set_hp"})
 	end
 end)
 

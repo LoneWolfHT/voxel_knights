@@ -77,15 +77,15 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		if fields.spawn then
 			game.clear_mobs_near(player:get_pos(), 150)
 			player:set_pos(game.spawn_pos)
-			player:set_hp(20)
+			player:set_hp(20, {type = "set_hp"})
 			meta:set_string("location", "spawn")
-			game.party[name] = nil
 			game.parties[game.party[name]].name = nil
+			game.party[name] = nil
 		elseif fields.deeper then
 			game.clear_mobs_near(player:get_pos(), 150)
 			meta:set_int("depth", depth+1)
-			game.party[name] = nil
 			game.parties[game.party[name]].name = nil
+			game.party[name] = nil
 			game.start_dungeon(player)
 		end
 	end
@@ -104,4 +104,11 @@ game.register_dungeon("slime_maze", {
 	level = 1,
 	size = 50,
 	path = minetest.get_modpath("game").."/dungeons/slime_maze.mts",
+})
+
+game.register_dungeon("fire_slime_maze", {
+	description = "Fire Slime Maze",
+	level = 2,
+	size = 50,
+	path = minetest.get_modpath("game").."/dungeons/fire_slime_maze.mts",
 })

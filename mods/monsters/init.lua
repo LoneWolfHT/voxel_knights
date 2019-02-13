@@ -16,7 +16,6 @@ function game.register_mob(name, def)
 		mesh = def.mesh,
         visual_size = def.visual_size or {x=1, y=1, z=1},
 		textures = {def.texture},
-		automatic_face_movement_dir = def.face_offset or 0,
 		collisionbox = def.collisionbox or {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
 		selection_box = def.selection_box or {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
 		collide_with_objects = def.collide_with_objects or true,
@@ -41,9 +40,13 @@ function game.register_mob(name, def)
 				for _, v in ipairs(minetest.get_objects_inside_radius(pos, def.view_range)) do
 					local ppos = v:get_pos()
 
-					ppos.y = ppos.y+1
+					ppos.y = ppos.y + 1
+
 					if v:is_player() and v:get_hp() > 0 and minetest.line_of_sight(pos_up, ppos) == true then
 						local vel = vector.direction(pos, ppos)
+						local yaw = minetest.dir_to_yaw(vel)
+
+						obj:set_yaw(yaw + def.face_offset)
 
 						vel.y = -9
 
@@ -61,7 +64,7 @@ function game.register_mob(name, def)
 
 							if self.attack_time >= game.attack_step then
 								self.attack_time = 0
-								v:punch(obj, 1, {damage_groups = {fleshy = def.dmg}}, nil)
+								v:punch(obj, 1, def.attack_capabilities, nil)
 							end
 						end
 					end
@@ -155,6 +158,10 @@ function game.register_mob(name, def)
 end
 
 function game.on_monster_death(self, puncher)
+	if game.party[puncher:get_player_name()] == nil then
+		return
+	end
+
 	for member, _ in pairs(game.parties[game.party[puncher:get_player_name()]]) do
 		local pmember = minetest.get_player_by_name(member)
 

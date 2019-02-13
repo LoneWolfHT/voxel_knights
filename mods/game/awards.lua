@@ -54,6 +54,9 @@ awards.register_award("blacksmith_2", {
 	icon = "game_sword_basic.png",
 	trigger = "custom",
 	on_unlock = function(name, def)
+		local meta = minetest.get_player_by_name(name):get_meta()
+
+		meta:set_int("skill_level", 2)
 		minetest.close_formspec(name, "")
 	end,
 })
@@ -69,6 +72,9 @@ awards.register_award("blacksmith_3", {
 	icon = "game_sword_basic.png",
 	trigger = "custom",
 	on_unlock = function(name, def)
+		local meta = minetest.get_player_by_name(name):get_meta()
+
+		meta:set_int("skill_level", 3)
 		minetest.close_formspec(name, "")
 	end,
 })
