@@ -25,6 +25,8 @@ function minetest.item_drop()
     return
 end
 
+minetest.set_mapgen_setting("mg_name", "singlenode", true)
+
 function game.clear_mobs_near(pos, radius)
 	for _, obj in ipairs(minetest.get_objects_inside_radius(pos, radius)) do
 		if not obj:is_player() and obj:get_luaentity().name:find("monsters:") then
