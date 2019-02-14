@@ -67,9 +67,9 @@ function crafting.make_result_selector(player, type, level, size, context)
 	formspec[#formspec + 1] = "field_close_on_enter[query;false]"
 	formspec[#formspec + 1] = "field[-4.75,0.81;3,0.8;query;;"
 	formspec[#formspec + 1] = context.crafting_query
-	formspec[#formspec + 1] = "]button[-2.2,0.5;0.8,0.8;search;?]"
-	formspec[#formspec + 1] = "button[-1.4,0.5;0.8,0.8;prev;<]"
-	formspec[#formspec + 1] = "button[-0.8,0.5;0.8,0.8;next;>]"
+	formspec[#formspec + 1] = "]image_button[-2.2,0.5;0.8,0.8;creative_search_icon.png;search;]"
+	formspec[#formspec + 1] = "image_button[-1.4,0.5;0.8,0.8;creative_prev_icon.png;prev;]"
+	formspec[#formspec + 1] = "image_button[-0.8,0.5;0.8,0.8;creative_next_icon.png;next;]"
 
 	formspec[#formspec + 1] = "container_end[]"
 

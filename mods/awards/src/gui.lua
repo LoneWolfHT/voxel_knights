@@ -160,7 +160,7 @@ function awards.get_formspec(name, to, sid)
 			end
 		end
 	end
-	return formspec .. ";"..sid.."]"
+	return formspec .. ";"..sid..";true]".."box[4,0;3.8,8.6;#000]"
 end
 
 
