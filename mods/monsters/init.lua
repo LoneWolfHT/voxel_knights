@@ -168,7 +168,7 @@ function game.register_mob(name, def)
 		groups = {spawner = 1, unbreakable = 1},
 		inventory_image = def.texture,
 		on_trigger = function(pos)
-			if not minetest.find_node_near(pos, "map:gate") then
+			if not minetest.find_node_near(pos, 100, "map:gate") then
 				minetest.remove_node(pos)
 				minetest.add_entity(pos, "monsters:"..name)
 			end
@@ -186,7 +186,7 @@ function game.register_mob(name, def)
 		inventory_image = def.texture,
 		tiles = {"air.png", "air.png", "air.png", "air.png", "air.png", "air.png"},
 		on_trigger = function(pos)
-			if not minetest.find_node_near(pos, "map:gate") then
+			if not minetest.find_node_near(pos, 100, "map:gate") then
 				minetest.remove_node(pos)
 				minetest.add_entity(pos, "monsters:"..name)
 				pos.x = pos.x + 1

@@ -6,11 +6,12 @@ game.partyid = 0
 game.party = {}
 
 function game.start_dungeon(name, level)
+	local pos = vector.multiply(game.dungeon_start_pos, game.dungeons+1)
+	local dname = game.get_dungeon(level)
+
 	if type(name) == "string" then
 		local player = minetest.get_player_by_name(name)
 		local meta = player:get_meta()
-		local pos = vector.multiply(game.dungeon_start_pos, game.dungeons+1)
-		local dname = game.get_dungeon(meta:get_int("skill_level"))
 
 		game.place_dungeon(dname, pos)
 		game.clear_mobs_near(pos, 200)
@@ -27,9 +28,7 @@ function game.start_dungeon(name, level)
 			game.parties[game.partyid] = {[name] = 1}
 		end
 	else
-		local pos = vector.multiply(game.dungeon_start_pos, game.dungeons+1)
-
-		game.place_dungeon(level, pos)
+		game.place_dungeon(dname, pos)
 		game.clear_mobs_near(pos, 200)
 
 		local spawnpos = minetest.find_node_near(pos, 200, "map:spawn_pos")
@@ -63,6 +62,10 @@ end
 
 function game.get_dungeon(skill_level)
 	local list = {}
+
+	if type(skill_level) == "string" then
+		return(skill_level)
+	end
 
 	while (true) do
 		for name, def in pairs(game.registered_dungeons) do
@@ -143,16 +146,28 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				m:set_int("depth", depth+1)
 			end
 
-			game.start_dungeon(game.parties[game.party[name]])
+			game.start_dungeon(game.parties[game.party[name]], meta:get_int("skill_level"))
 		end
 	elseif formname == "game:d_enter_form" and fields.level and fields.level:find("DCL") then
 		local level = tonumber(fields.level:sub(5))
+		local can_enter = 0
+		local levels = {}
+		local plevel = minetest.get_player_by_name(name):get_meta():get_int("skill_level")
 
-		if meta:get_int("skill_level") < level then
+		for n, def in pairs(game.registered_dungeons) do
+			if plevel >= def.level then
+				can_enter = can_enter + 1
+				table.insert(levels, n)
+			end
+		end
+
+		table.sort(levels)
+
+		if can_enter < level then
 			minetest.chat_send_player(name, "<Gatekeeper> You do not have the gear needed to go so deep, "..name)
 		else
 			minetest.close_formspec(name, "game:d_enter_form")
-			game.start_dungeon(name, level)
+			game.start_dungeon(name, levels[level])
 		end
 	end
 end)

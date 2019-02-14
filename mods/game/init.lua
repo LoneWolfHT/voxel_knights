@@ -40,9 +40,7 @@ function game.clear_mobs_near(pos, radius)
 	end
 
 	for _, obj in ipairs(minetest.get_objects_inside_radius(pos, radius)) do
-		if not obj:is_player() and obj:get_luaentity().name:find("monsters:") then
-			obj:remove()
-		end
+		obj:remove()
 	end
 end
 
