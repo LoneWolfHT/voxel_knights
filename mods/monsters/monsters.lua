@@ -3,15 +3,15 @@ game.register_mob("slime", {
 	mesh = "monsters_slime.b3d",
 	texture = "monsters_slime.png",
 	view_range = 25,
-	speed = 3.5,
+	speed = 4.1,
 	attack_capabilities = {
 		damage_groups = {fleshy = 2}
 	},
-	reach = 1.5,
+	reach = 1,
 	face_offset = 0,
 	on_die = game.on_monster_death,
 	drops = {
-		["xp:xp"] = 3,
+		["xp:xp"] = 5,
 	},
 	animations = {
 		walk = {
@@ -30,7 +30,7 @@ game.register_mob("slime", {
 })
 
 game.register_mob("slime_fire", {
-	hp = 25,
+	hp = 20,
 	mesh = "monsters_slime.b3d",
 	texture = "default_lava.png^monsters_slime_fire.png",
 	view_range = 25,
@@ -42,7 +42,7 @@ game.register_mob("slime_fire", {
 	face_offset = 0,
 	on_die = game.on_monster_death,
 	drops = {
-		["xp:xp 2"] = 1,
+		["xp:xp 3"] = 1,
 		["game:fire_cube"] = 20,
 	},
 	animations = {

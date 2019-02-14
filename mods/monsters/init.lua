@@ -1,5 +1,5 @@
 game.mob_step = 0.5
-game.attack_step = 1
+game.attack_step = 2
 
 function game.register_mob(name, def)
 	local ent = {

@@ -8,7 +8,7 @@ function map.place_lobby()
 
 	minetest.log("Done placing lobby...")
 
-	for k, p in ipairs(minetest.get_connected_players()) do
+	for _, p in ipairs(minetest.get_connected_players()) do
 		p:set_pos(game.spawn_pos)
 	end
 end
@@ -26,13 +26,13 @@ for name, def in pairs(minetest.registered_nodes) do
 
 	if name:find("door") or name:find("bed") then
 		if name:find("door_steel") then
-			def.on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
+			def.on_rightclick = function(_, _, clicker)
 				local meta = clicker:get_meta()
 
 				if meta:get_string("location") == "spawn" then
-					game.start_dungeon(clicker)
+					game.show_dungeon_enter_form(clicker:get_player_name())
 				elseif meta:get_string("location") == "dungeon" then
-					game.show_dungeon_form(clicker:get_player_name())
+					game.show_dungeon_exit_form(clicker:get_player_name())
 				end
 			end
 		else

@@ -13,6 +13,7 @@ minetest.register_item(":", {
 	type = "none",
 	wield_image = "wieldhand.png",
 	wield_scale = {x=1,y=1,z=2.5},
+	reach = 2,
 	tool_capabilities = {
 		full_punch_interval = 0.9,
 		max_drop_level = 0,
@@ -20,6 +21,12 @@ minetest.register_item(":", {
 		damage_groups = {fleshy=1},
 	}
 })
+
+for name, def in pairs(minetest.registered_items) do
+	if not def.range then
+		minetest.override_item(name, {range = 2})
+	end
+end
 
 function minetest.item_drop()
     return
@@ -33,6 +40,16 @@ function game.clear_mobs_near(pos, radius)
 			obj:remove()
 		end
 	end
+end
+
+function game.get_table_size(table)
+	local count = 0
+
+	for _ in pairs(table) do
+		count = count + 1
+	end
+
+	return(count)
 end
 
 local step = 0
@@ -64,6 +81,8 @@ minetest.register_on_joinplayer(function(player)
 	local name = player:get_player_name()
 	local meta = player:get_meta()
 
+	player:set_hp(20, {type = "set_hp"})
+
 	if meta:get_string("location") == "dungeon" then
 		if #game.parties == 0 or #game.parties[game.party[name]] <= 1 then
 			game.clear_mobs_near(player:get_pos(), 150)
@@ -77,8 +96,6 @@ minetest.register_on_joinplayer(function(player)
 		player:set_pos(game.spawn_pos)
 		meta:set_string("location", "spawn")
 	end
-
-	player:set_hp(20, {type = "set_hp"})
 
 	inv:set_size("storage", 8*6)
 	inv:set_size("xp", 1)
@@ -103,6 +120,7 @@ minetest.register_on_leaveplayer(function(player)
 	local name = player:get_player_name()
 	local meta = player:get_meta()
 
+	player:set_hp(20, {type = "set_hp"})
 	if meta:get_string("location") == "dungeon" then
 		if #game.parties[game.party[name]] <= 1 then
 			game.clear_mobs_near(player:get_pos(), 150)
@@ -110,7 +128,6 @@ minetest.register_on_leaveplayer(function(player)
 
 		game.parties[game.party[name]].name = nil
 		game.party[name] = nil
-		player:set_hp(20, {type = "set_hp"})
 	end
 end)
 

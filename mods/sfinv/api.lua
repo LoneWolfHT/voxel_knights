@@ -29,8 +29,8 @@ end
 function sfinv.get_nav_fs(player, context, nav, current_idx)
 	-- Only show tabs if there is more than one page
 	if #nav > 1 then
-		return "tabheader[0,0;sfinv_nav_tabs;" .. table.concat(nav, ",") ..
-				";" .. current_idx .. ";true;false]"
+		return "tabheader[0,-0.1;sfinv_nav_tabs;" .. table.concat(nav, ",") ..
+				";" .. current_idx .. ";false;false]"
 	else
 		return ""
 	end
