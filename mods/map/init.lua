@@ -184,8 +184,8 @@ minetest.register_node("map:cobweb", {
 	groups = {diggable = 3},
 })
 
-for i = 1, 3, 1 do
-	minetest.register_node(("map:spikes_%d"):format(i), {
+for i = 2, 4, 1 do
+	minetest.register_node(("map:spikes_%d"):format(i-1), {
 		description = ("Spikes\nDPS: %d)"):format(i*i),
 		drawtype = "plantlike",
 		tiles = {"map_spikes.png"},
@@ -195,6 +195,7 @@ for i = 1, 3, 1 do
 		sunlight_propagates = true,
 		damage_per_second = i*i,
 		selection_box = {type = "fixed", fixed = {-0.5, -0.5, -0.5, 0.5, 0.1, 0.5}},
+		collision_box = {type = "fixed", fixed = {-0.5, -0.5, -0.5, 0.5, 2.5, 0.5}},
 		groups = {unbreakable = 1},
 	})
 end

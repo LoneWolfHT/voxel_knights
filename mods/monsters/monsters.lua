@@ -7,7 +7,7 @@ game.register_mob("slime", {
 	attack_capabilities = {
 		damage_groups = {fleshy = 2}
 	},
-	reach = 1,
+	reach = 1.5,
 	face_offset = 0,
 	on_die = game.on_monster_death,
 	drops = {

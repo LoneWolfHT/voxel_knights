@@ -139,7 +139,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			game.clear_mobs_near(player:get_pos(), 200)
 
 			for n in pairs(game.parties[game.party[name]]) do
-				local m = minetest.get_player_by_name(n)
+				local m = minetest.get_player_by_name(n):get_meta()
 				m:set_int("depth", depth+1)
 			end
 
@@ -151,6 +151,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		if meta:get_int("skill_level") < level then
 			minetest.chat_send_player(name, "<Gatekeeper> You do not have the gear needed to go so deep, "..name)
 		else
+			minetest.close_formspec(name, "game:d_enter_form")
 			game.start_dungeon(name, level)
 		end
 	end
