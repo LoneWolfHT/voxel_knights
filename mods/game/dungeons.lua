@@ -54,7 +54,10 @@ end
 function game.place_dungeon(name, pos)
 	for n, def in pairs(game.registered_dungeons) do
 		if n == name then
-			minetest.emerge_area(pos, vector.add(pos, def.size))
+			if def.needs_clearing then
+				minetest.delete_area(pos, vector.add(pos, def.size))
+			end
+
 			minetest.place_schematic(pos, def.path, def.rot, nil, true, nil)
 			return "Dungeon placed"
 		end
@@ -103,13 +106,13 @@ function game.show_dungeon_enter_form(name)
 
 	for _, def in pairs(game.registered_dungeons) do
 		if plevel >= def.level then
-			table.insert(levels, "#2ba400Level "..def.level..": "..def.description)
+			table.insert(levels, "#ffc837Level "..def.level..": "..def.description)
 		else
 			table.insert(levels, "#cd0000Level "..def.level..": ???")
 		end
 	end
 
-	table.sort(levels)
+	table.sort(levels, function(a,b) return a>b end)
 
     local form = "size[4,8]" ..
     "bgcolor[#000000aa;false]" ..
@@ -141,6 +144,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				m:set_string("location", "spawn")
 				game.party[n] = nil
 			end
+
+			game.dungeons = game.dungeons - 1
 		elseif fields.deeper then
 			game.clear_mobs_near(player:get_pos(), 200)
 
@@ -149,6 +154,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				m:set_int("depth", depth+1)
 			end
 
+			game.dungeons = game.dungeons - 1
 			game.start_dungeon(game.parties[game.party[name]], meta:get_int("skill_level"))
 		end
 	elseif formname == "game:d_enter_form" and fields.level and fields.level:find("DCL") then
@@ -186,20 +192,21 @@ end
 game.register_dungeon("slime_maze", {
 	description = "Slime Maze",
 	level = 1,
-	size = 50,
+	size = vector.new(51, 5, 51),
 	path = minetest.get_modpath("game").."/dungeons/slime_maze.mts",
 })
 
 game.register_dungeon("fire_slime_maze", {
 	description = "Fire Slime Maze",
 	level = 2,
-	size = 50,
+	size = vector.new(50, 7, 50),
 	path = minetest.get_modpath("game").."/dungeons/fire_slime_maze.mts",
 })
 
 game.register_dungeon("slime valley", {
 	description = "Slime Valley",
 	level = 1,
-	size = 50,
+	size = vector.new(10, 10, 70),
+	needs_clearing = true,
 	path = minetest.get_modpath("game").."/dungeons/slime_valley.mts",
 })
