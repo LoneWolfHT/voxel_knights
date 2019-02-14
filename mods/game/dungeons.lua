@@ -97,9 +97,9 @@ function game.show_dungeon_enter_form(name)
 
 	for _, def in pairs(game.registered_dungeons) do
 		if plevel >= def.level then
-			table.insert(levels, "#2ba400Level "..def.level..": You can do this level")
+			table.insert(levels, "#2ba400Level "..def.level..": "..def.description)
 		else
-			table.insert(levels, "#cd0000Level "..def.level..": You can't do this level yet")
+			table.insert(levels, "#cd0000Level "..def.level..": ???")
 		end
 	end
 
@@ -177,4 +177,11 @@ game.register_dungeon("fire_slime_maze", {
 	level = 2,
 	size = 50,
 	path = minetest.get_modpath("game").."/dungeons/fire_slime_maze.mts",
+})
+
+game.register_dungeon("slime valley", {
+	description = "Slime Valley",
+	level = 1,
+	size = 50,
+	path = minetest.get_modpath("game").."/dungeons/slime_valley.mts",
 })

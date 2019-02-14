@@ -129,7 +129,8 @@ function game.register_mob(name, def)
 		paramtype = "light",
 		sunlight_propagates = true,
 		groups = {spawner = 1, unbreakable = 1},
-		inventory_image = "air.png^default_tool_mesesword.png",
+		inventory_image = def.texture,
+		tiles = {"air.png", "air.png", "air.png", "air.png", "air.png", "air.png"},
 		on_trigger = function(pos)
 			minetest.remove_node(pos)
 			minetest.add_entity(pos, "monsters:"..name)
@@ -144,7 +145,8 @@ function game.register_mob(name, def)
 		paramtype = "light",
 		sunlight_propagates = true,
 		groups = {spawner = 1, unbreakable = 1},
-		inventory_image = "air.png^default_tool_mesesword.png",
+		inventory_image = def.texture,
+		tiles = {"air.png", "air.png", "air.png", "air.png", "air.png", "air.png"},
 		on_trigger = function(pos)
 			minetest.remove_node(pos)
 			minetest.add_entity(pos, "monsters:"..name)
@@ -153,6 +155,46 @@ function game.register_mob(name, def)
 			pos.z = pos.z + 1
 			pos.x = pos.x - 1
 			minetest.add_entity(pos, "monsters:"..name)
+		end
+	})
+
+	minetest.register_node("monsters:"..name.."_block_gate", {
+		description = name.." gate spawner x1",
+		drawtype = "airlike",
+		walkable = true,
+		pointable = true,
+		paramtype = "light",
+		sunlight_propagates = true,
+		groups = {spawner = 1, unbreakable = 1},
+		inventory_image = def.texture,
+		on_trigger = function(pos)
+			if not minetest.find_node_near(pos, "map:gate") then
+				minetest.remove_node(pos)
+				minetest.add_entity(pos, "monsters:"..name)
+			end
+		end
+	})
+
+	minetest.register_node("monsters:"..name.."_block_gate_3", {
+		description = name.." gate spawner x3",
+		drawtype = "airlike",
+		walkable = true,
+		pointable = true,
+		paramtype = "light",
+		sunlight_propagates = true,
+		groups = {spawner = 1, unbreakable = 1},
+		inventory_image = def.texture,
+		tiles = {"air.png", "air.png", "air.png", "air.png", "air.png", "air.png"},
+		on_trigger = function(pos)
+			if not minetest.find_node_near(pos, "map:gate") then
+				minetest.remove_node(pos)
+				minetest.add_entity(pos, "monsters:"..name)
+				pos.x = pos.x + 1
+				minetest.add_entity(pos, "monsters:"..name)
+				pos.z = pos.z + 1
+				pos.x = pos.x - 1
+				minetest.add_entity(pos, "monsters:"..name)
+			end
 		end
 	})
 end

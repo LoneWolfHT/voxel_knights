@@ -166,6 +166,37 @@ minetest.register_node("map:storage", {
 	end
 })
 
+minetest.register_node("map:gate", {
+	description = "3x1 gate (All monsters need to be dead)",
+	tiles = {"map_gate.png"},
+	drawtype = "mesh",
+	mesh = "map_gate.obj",
+	groups = {unbreakable = 1},
+	paramtype2 = "facedir",
+	selection_box = {
+		type = "fixed",
+		fixed = {
+			{-1.1, -0.5, -0.1, 1.1, 3, 0.1},
+			{-1.5, -0.5, -0.5, 1.5, -0.2, 0.5}
+		}
+	},
+	collision_box = {
+		type = "fixed",
+		fixed = {
+			{-1.1, -0.5, -0.1, 1.1, 3, 0.1},
+			{-1.5, -0.5, -0.5, 1.5, -0.2, 0.5}
+		}
+	},
+	on_rightclick = function(pos, _, player)
+		if game.get_mobs_near(pos, 100) == 0 then
+			minetest.remove_node(pos)
+		else
+			minetest.chat_send_player(player:get_player_name(),
+			"You have to kill all enemies before you can open this gate")
+		end
+	end
+})
+
 minetest.register_node("map:cobweb", {
 	description = "Cobweb",
 	drawtype = "plantlike",

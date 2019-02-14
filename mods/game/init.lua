@@ -23,7 +23,7 @@ minetest.register_item(":", {
 })
 
 for name, def in pairs(minetest.registered_items) do
-	if not def.range then
+	if not def.range and not name:find("map:") and not name:find("monsters:") then
 		minetest.override_item(name, {range = 2})
 	end
 end
@@ -35,11 +35,31 @@ end
 minetest.set_mapgen_setting("mg_name", "singlenode", true)
 
 function game.clear_mobs_near(pos, radius)
+	if minetest.get_objects_inside_radius(pos, radius) == nil then
+		return
+	end
+
 	for _, obj in ipairs(minetest.get_objects_inside_radius(pos, radius)) do
 		if not obj:is_player() and obj:get_luaentity().name:find("monsters:") then
 			obj:remove()
 		end
 	end
+end
+
+function game.get_mobs_near(pos, radius)
+	if minetest.get_objects_inside_radius(pos, radius) == nil then
+		return
+	end
+
+	local count = 0
+
+	for _, obj in ipairs(minetest.get_objects_inside_radius(pos, radius)) do
+		if not obj:is_player() and obj:get_luaentity().name:find("monsters:") then
+			count = count + 1
+		end
+	end
+
+	return(count)
 end
 
 function game.get_table_size(table)
