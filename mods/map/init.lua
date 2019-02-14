@@ -2,9 +2,11 @@ map = {}
 
 function map.place_lobby()
 	minetest.log("Placing lobby...")
+	local pos = {x = 0, y = 0, z = 0}
 
 	local path = minetest.get_modpath("map") .. "/schematics/lobby.mts"
-	minetest.place_schematic({x = 0, y = 0, z = 0}, path, "0", nil, true)
+	minetest.emerge_area(pos, vector.add(pos, 250))
+	minetest.place_schematic(pos, path, "0", nil, true)
 
 	minetest.log("Done placing lobby...")
 

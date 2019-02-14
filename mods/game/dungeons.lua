@@ -36,10 +36,12 @@ function game.start_dungeon(name, level)
 		game.dungeons = game.dungeons + 1
 		game.partyid = game.partyid + 1
 
-		for _, pname in ipairs(name) do
+		for pname in pairs(name) do
 			local player = minetest.get_player_by_name(pname)
 			local meta = player:get_meta()
+
 			player:set_pos(spawnpos)
+			minetest.chat_send_player(pname, "You are now in "..game.registered_dungeons[dname].description)
 			meta:set_string("location", "dungeon");
 			game.party[pname] = game.partyid
 			game.parties[game.partyid] = {[pname] = 1}
@@ -52,6 +54,7 @@ end
 function game.place_dungeon(name, pos)
 	for n, def in pairs(game.registered_dungeons) do
 		if n == name then
+			minetest.emerge_area(pos, vector.add(pos, def.size))
 			minetest.place_schematic(pos, def.path, def.rot, nil, true, nil)
 			return "Dungeon placed"
 		end
