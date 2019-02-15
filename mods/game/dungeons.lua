@@ -23,6 +23,7 @@ function game.start_dungeon(name, level)
 			game.partyid = game.partyid + 1
 			player:set_pos(spawnpos)
 			minetest.remove_node(spawnpos)
+			minetest.chat_send_player(name, "You are now in "..game.registered_dungeons[dname].description)
 			meta:set_string("location", "dungeon");
 			game.party[name] = game.partyid
 			game.parties[game.partyid] = {[name] = 1}
@@ -170,7 +171,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			end
 		end
 
-		table.sort(levels)
+		table.sort(levels, function(a,b) return a>b end)
 
 		if can_enter < level then
 			minetest.chat_send_player(name, "<Gatekeeper> You do not have the gear needed to go so deep, "..name)
@@ -203,10 +204,17 @@ game.register_dungeon("fire_slime_maze", {
 	path = minetest.get_modpath("game").."/dungeons/fire_slime_maze.mts",
 })
 
-game.register_dungeon("slime valley", {
+game.register_dungeon("slime_valley", {
 	description = "Slime Valley",
 	level = 1,
 	size = vector.new(10, 10, 70),
 	needs_clearing = true,
 	path = minetest.get_modpath("game").."/dungeons/slime_valley.mts",
+})
+
+game.register_dungeon("cave_party", {
+	description = "Cave Party",
+	level = 1,
+	size = vector.new(25, 10, 25),
+	path = minetest.get_modpath("game").."/dungeons/cave_party.mts",
 })

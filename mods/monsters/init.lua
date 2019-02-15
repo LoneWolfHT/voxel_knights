@@ -8,7 +8,8 @@ function game.register_mob(name, def)
 		pointable = def.pointable or true,
 		hp_max = def.hp,
 		hp = def.hp,
-		step_height = def.step_height or 1,
+		anim = "none",
+		stepheight = def.stepheight or 1.5,
 		time = 0,
 		attack_time = 0,
 		drops = def.drops,
@@ -17,7 +18,7 @@ function game.register_mob(name, def)
         visual_size = def.visual_size or {x=1, y=1, z=1},
 		textures = {def.texture},
 		collisionbox = def.collisionbox or {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
-		selection_box = def.selection_box or {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
+		selectionbox = def.selectionbox or {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
 		collide_with_objects = def.collide_with_objects or true,
         on_step = function(self, dtime)
 			local pos = self.object:get_pos()
@@ -53,10 +54,16 @@ function game.register_mob(name, def)
 						sighted = true
 
 						if vector.distance(ppos, pos) >= def.reach then
-							obj:set_animation(def.animations.walk.range, def.animations.walk.speed)
+							if self.anim ~= "walk" then
+								obj:set_animation(def.animations.walk.range, def.animations.walk.speed)
+								self.anim = "walk"
+							end
+
 							obj:set_velocity(vector.multiply(vel, def.speed))
 						else
-							obj:set_animation(def.animations.attack.range, def.animations.attack.speed)
+							if self.anim ~= "walk" then
+								self.anim = "attack"
+							end
 
 							if vector.distance(ppos, pos) <= def.reach/2 then
 								obj:set_velocity(vector.new(0, 0, 0))
