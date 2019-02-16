@@ -9,6 +9,8 @@ function game.start_dungeon(name, level)
 	local pos = vector.multiply(game.dungeon_start_pos, game.dungeons+1)
 	local dname = game.get_dungeon(level)
 
+	game.partyid = game.partyid + 1
+
 	if type(name) == "string" then
 		local player = minetest.get_player_by_name(name)
 		local meta = player:get_meta()
@@ -19,8 +21,6 @@ function game.start_dungeon(name, level)
 		local spawnpos = minetest.find_node_near(pos, 200, "map:spawn_pos")
 
 		if spawnpos then
-			game.dungeons = game.dungeons + 1
-			game.partyid = game.partyid + 1
 			player:set_pos(spawnpos)
 			minetest.remove_node(spawnpos)
 			minetest.chat_send_player(name, "You are now in "..game.registered_dungeons[dname].description)
@@ -34,8 +34,7 @@ function game.start_dungeon(name, level)
 
 		local spawnpos = minetest.find_node_near(pos, 200, "map:spawn_pos")
 
-		game.dungeons = game.dungeons + 1
-		game.partyid = game.partyid + 1
+		game.parties[game.partyid] = {}
 
 		for pname in pairs(name) do
 			local player = minetest.get_player_by_name(pname)
@@ -45,11 +44,13 @@ function game.start_dungeon(name, level)
 			minetest.chat_send_player(pname, "You are now in "..game.registered_dungeons[dname].description)
 			meta:set_string("location", "dungeon");
 			game.party[pname] = game.partyid
-			game.parties[game.partyid] = {[pname] = 1}
+			game.parties[game.partyid][pname] = 1
 		end
 
 		minetest.remove_node(spawnpos)
 	end
+
+	game.dungeons = game.dungeons + 1
 end
 
 function game.place_dungeon(name, pos)
@@ -109,7 +110,7 @@ function game.show_dungeon_enter_form(name)
 		if plevel >= def.level then
 			table.insert(levels, "#ffc837Level "..def.level..": "..def.description)
 		else
-			table.insert(levels, "#cd0000Level "..def.level..": ???")
+			table.insert(levels, "#9d9d9dLevel "..def.level..": ???")
 		end
 	end
 
@@ -133,6 +134,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		local depth = meta:get_int("depth")
 
 		if fields.spawn then
+			local pid = game.party[name]
+
 			game.clear_mobs_near(player:get_pos(), 200)
 
 			for n in pairs(game.parties[game.party[name]]) do
@@ -146,8 +149,11 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				game.party[n] = nil
 			end
 
+			game.parties[pid] = nil
+
 			game.dungeons = game.dungeons - 1
 		elseif fields.deeper then
+			local pid = game.party[name]
 			game.clear_mobs_near(player:get_pos(), 200)
 
 			for n in pairs(game.parties[game.party[name]]) do
@@ -157,6 +163,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 			game.dungeons = game.dungeons - 1
 			game.start_dungeon(game.parties[game.party[name]], meta:get_int("skill_level"))
+			game.parties[pid] = nil
 		end
 	elseif formname == "game:d_enter_form" and fields.level and fields.level:find("DCL") then
 		local level = tonumber(fields.level:sub(5))

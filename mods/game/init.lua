@@ -1,5 +1,6 @@
 game = {
-	spawn_pos = vector.new(52, 35, 165)
+	spawn_pos = vector.new(52, 35, 165),
+	friend_requests = {}
 }
 
 local modstorage = minetest.get_mod_storage()
@@ -8,6 +9,7 @@ dofile(minetest.get_modpath("game").."/dungeons.lua")
 dofile(minetest.get_modpath("game").."/items.lua")
 dofile(minetest.get_modpath("game").."/awards.lua")
 dofile(minetest.get_modpath("game").."/armor.lua")
+dofile(minetest.get_modpath("game").."/friends.lua")
 
 minetest.register_item(":", {
 	type = "none",
@@ -100,13 +102,10 @@ minetest.register_on_joinplayer(function(player)
 	local meta = player:get_meta()
 
 	player:set_hp(20, {type = "set_hp"})
+	game.friend_requests[name] = {}
 
 	if meta:get_string("location") == "dungeon" then
-		if #game.parties == 0 or #game.parties[game.party[name]] <= 1 then
-			game.clear_mobs_near(player:get_pos(), 150)
-		end
-
-		if #game.parties ~= 0 then
+		if game.get_table_size(game.parties) ~= 0 and game.party[name] then
 			game.parties[game.party[name]].name = nil
 			game.party[name] = nil
 		end
@@ -117,6 +116,7 @@ minetest.register_on_joinplayer(function(player)
 
 	inv:set_size("storage", 8*6)
 	inv:set_size("xp", 1)
+	inv:set_size("gift", 1)
 end)
 
 minetest.register_on_newplayer(function(player)
@@ -125,6 +125,7 @@ minetest.register_on_newplayer(function(player)
 	meta:set_string("location", "spawn")
 	meta:set_int("skill_level", 1)
 	meta:set_int("depth", 0)
+	player:set_pos(game.spawn_pos)
 
 	minetest.after(1, function()
 		if modstorage:get_int("lobby_placed") ~= 1 then
@@ -140,8 +141,9 @@ minetest.register_on_leaveplayer(function(player)
 
 	player:set_hp(20, {type = "set_hp"})
 	if meta:get_string("location") == "dungeon" then
-		if #game.parties[game.party[name]] <= 1 then
+		if game.get_table_size(game.parties[game.party[name]]) == 1 then
 			game.clear_mobs_near(player:get_pos(), 150)
+			game.dungeons = game.dungeons - 1
 		end
 
 		game.parties[game.party[name]].name = nil
@@ -168,8 +170,36 @@ minetest.register_on_respawnplayer(function(player)
 	return true
 end)
 
-minetest.register_on_punchplayer(function(_, hitter)
-	if hitter:is_player() == true then
+minetest.register_on_punchplayer(function(clicked, clicker)
+	if clicker:is_player() == true then
+		local pname = clicked:get_player_name()
+		local cname = clicker:get_player_name()
+		local p_friends = minetest.deserialize(clicked:get_meta():get_string("friends"))
+
+		if type(p_friends) == "string" then
+			p_friends = {p_friends}
+		end
+
+		if p_friends ~= nil then
+			for _, n in ipairs(p_friends) do
+				if n == cname then
+					return true
+				end
+			end
+		end
+
+		if clicked:get_meta():get_string("location") ~= "spawn" then
+			minetest.chat_send_player(cname, "You can only send someone a friend request when you are both at spawn!")
+		else
+			if game.friend_requests[cname].to == nil and game.friend_requests[pname].from == nil then
+				game.show_friend_request_form(cname, pname)
+			elseif game.friend_requests[pname].from == nil then
+				minetest.chat_send_player(cname, "You can only send one friend request at a time!")
+			else
+				minetest.chat_send_player(cname, "Player has already been sent a friend request by someone else")
+			end
+		end
+
 		return true
 	end
 end)

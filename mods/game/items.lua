@@ -72,11 +72,13 @@ minetest.register_craftitem("game:blade_sword", {
 
 minetest.register_craftitem("game:fire_cube", {
 	description = "Fire Cube",
+	tradeable = true,
 	inventory_image = "game_fire_cube.png"
 })
 
 minetest.register_craftitem("game:flame_cube", {
 	description = "Flame Cube",
+	tradeable = true,
 	inventory_image = "game_flame_cube.png"
 })
 
