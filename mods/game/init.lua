@@ -10,6 +10,7 @@ dofile(minetest.get_modpath("game").."/items.lua")
 dofile(minetest.get_modpath("game").."/awards.lua")
 dofile(minetest.get_modpath("game").."/armor.lua")
 dofile(minetest.get_modpath("game").."/friends.lua")
+dofile(minetest.get_modpath("game").."/sprint.lua")
 
 minetest.register_item(":", {
 	type = "none",
@@ -173,7 +174,7 @@ minetest.register_on_respawnplayer(function(player)
 	local meta = player:get_meta()
 
 	if meta:get_string("location") == "dungeon" then
-		if #game.parties[game.party[name]] <= 1 then
+		if game.get_table_size(game.parties[game.party[name]]) <= 1 then
 			game.clear_mobs_near(player:get_pos(), 150)
 		end
 
