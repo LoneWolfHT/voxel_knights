@@ -46,6 +46,12 @@ function game.clear_mobs_near(pos, radius)
 	end
 end
 
+function game.update_inventories()
+	for _, p in ipairs(minetest.get_connected_players()) do
+		sfinv.set_page(p, sfinv.get_page(p))
+	end
+end
+
 function game.get_mobs_near(pos, radius)
 	if minetest.get_objects_inside_radius(pos, radius) == nil then
 		return
@@ -117,6 +123,7 @@ minetest.register_on_joinplayer(function(player)
 	inv:set_size("storage", 8*6)
 	inv:set_size("xp", 1)
 	inv:set_size("gift", 1)
+	game.update_inventories()
 end)
 
 minetest.register_on_newplayer(function(player)
@@ -133,6 +140,8 @@ minetest.register_on_newplayer(function(player)
 			map.place_lobby()
 		end
 	end)
+
+	game.update_inventories()
 end)
 
 minetest.register_on_leaveplayer(function(player)
@@ -140,6 +149,7 @@ minetest.register_on_leaveplayer(function(player)
 	local meta = player:get_meta()
 
 	player:set_hp(20, {type = "set_hp"})
+
 	if meta:get_string("location") == "dungeon" then
 		if game.get_table_size(game.parties[game.party[name]]) == 1 then
 			game.clear_mobs_near(player:get_pos(), 150)
@@ -149,6 +159,8 @@ minetest.register_on_leaveplayer(function(player)
 		game.parties[game.party[name]].name = nil
 		game.party[name] = nil
 	end
+
+	minetest.after(0.5, game.update_inventories)
 end)
 
 minetest.register_on_respawnplayer(function(player)
@@ -166,6 +178,7 @@ minetest.register_on_respawnplayer(function(player)
 
 	player:set_pos(game.spawn_pos)
 	meta:set_string("location", "spawn")
+	game.update_inventories()
 
 	return true
 end)
@@ -217,8 +230,8 @@ armor.get_armor_formspec = function(self, name, listring)
 		return "label[0,0;Armor not initialized!]"
 	end
 	local formspec = armor.formspec..
-		"list[detached:"..name.."_armor;armor;7.1,0.1;1,1;]"..
-		"image[7.1,0.1;1,1;game_armor_bkgd.png]"
+		"list[detached:"..name.."_armor;armor;3.4,3.65;1,1;]"..
+		"image[3.4,3.65;1,1;game_armor_bkgd.png]"
 	if listring == true then
 		formspec = formspec.."listring[current_player;main]"..
 			"listring[detached:"..name.."_armor;armor]"
@@ -249,8 +262,9 @@ sfinv.override_page("sfinv:crafting", {
 		local formspec = armor:get_armor_formspec(player:get_player_name(), true)..
 			"list[detached:creative_trash;main;0,3.6;1,1;]" ..
 				"image[0.05,3.7;0.8,0.8;creative_trash_icon.png]" ..
-				("label[5,0.1;Experience: %d]"):format(xp) ..
-				("label[5,0.6;Rooms Completed: %d]"):format(depth)
+				"box[5,-0.1;2.83,4.65;#000]" ..
+				("label[5.1,-0.1;Experience: %d]"):format(xp) ..
+				("label[5.1,0.3;Rooms Completed: %d]"):format(depth)
 
 		return sfinv.make_formspec(player, context, formspec, true)
 	end,

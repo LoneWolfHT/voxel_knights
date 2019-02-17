@@ -50,6 +50,7 @@ function game.start_dungeon(name, level)
 		minetest.remove_node(spawnpos)
 	end
 
+	game.update_inventories()
 	game.dungeons = game.dungeons + 1
 end
 
