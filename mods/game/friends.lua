@@ -162,7 +162,7 @@ sfinv.register_page("game:friends", {
 
 				minetest.chat_send_player(name, "Gift sent!")
 				minetest.chat_send_player(friend:get_player_name(), minetest.colorize("#ffc837", name ..
-					" sent you " .. item .. "! Look in your storage to see it"))
+					" sent you " .. item:get_name() .. "! Look in your storage to see it"))
 			else
 				minetest.chat_send_player(name, "That item is not tradable!")
 				inv:remove_item("gift", item)
