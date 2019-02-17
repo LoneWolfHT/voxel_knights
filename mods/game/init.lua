@@ -98,6 +98,11 @@ minetest.register_globalstep(function(dtime)
 					minetest.registered_nodes[node.name].on_trigger(npos)
 				end
 			end
+
+			if meta:get_string("location") == "spawn" and p:get_pos().y <= 0 and
+			minetest.check_player_privs(p:get_player_name(), "fly") == false then
+				p:set_pos(game.spawn_pos)
+			end
 		end
 	end
 end)
@@ -216,6 +221,14 @@ minetest.register_on_punchplayer(function(clicked, clicker)
 		return true
 	end
 end)
+
+minetest.register_on_player_hpchange(function(_, hp_change, reason)
+	if reason.type == "fall" then
+		return 0
+	else
+		return hp_change
+	end
+end, true)
 
 armor.formspec = "image[3,0;2,4;armor_preview]"..
 	default.gui_bg..
