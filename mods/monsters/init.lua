@@ -66,7 +66,7 @@ function game.register_mob(name, def)
 							end
 
 							if vector.distance(ppos, pos) <= def.reach/2 then
-								obj:set_velocity(vector.new(0, 0, 0))
+								obj:set_velocity(vector.new(0, -9, 0))
 							end
 
 							if self.attack_time >= game.attack_step then
@@ -79,7 +79,7 @@ function game.register_mob(name, def)
 
 				if sighted == false then
 					obj:set_animation(def.animations.idle.range, def.animations.idle.speed)
-					obj:set_velocity(vector.new(0, 0, 0))
+					obj:set_velocity(vector.new(0, -9, 0))
 				end
 			end
 		end,
