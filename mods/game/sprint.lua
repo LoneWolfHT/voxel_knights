@@ -2,7 +2,7 @@ local sprint_step = 0
 minetest.register_globalstep(function(dtime)
 	sprint_step = sprint_step + dtime
 
-	if sprint_step >= 0.5 then
+	if sprint_step >= 0.35 then
 		sprint_step = 0
 
 		for _, p in ipairs(minetest.get_connected_players()) do

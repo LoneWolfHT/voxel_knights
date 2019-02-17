@@ -16,7 +16,7 @@ function game.start_dungeon(name, level)
 		local meta = player:get_meta()
 
 		game.place_dungeon(dname, pos)
-		game.clear_mobs_near(pos, 200)
+		game.clear_mobs_near(pos)
 
 		local spawnpos = minetest.find_node_near(pos, 200, "map:spawn_pos")
 
@@ -30,7 +30,7 @@ function game.start_dungeon(name, level)
 		end
 	else
 		game.place_dungeon(dname, pos)
-		game.clear_mobs_near(pos, 200)
+		game.clear_mobs_near(pos)
 
 		local spawnpos = minetest.find_node_near(pos, 200, "map:spawn_pos")
 
@@ -115,7 +115,14 @@ function game.show_dungeon_enter_form(name)
 		end
 	end
 
-	table.sort(levels, function(a,b) return a>b end)
+	table.sort(levels, function(a,b)
+		if a ~= nil and b ~= nil then
+			a = a:sub(a:find("l")+2, a:find(":")-1)
+			b = b:sub(b:find("l")+2, b:find(":")-1)
+		end
+
+		return a < b
+	end)
 
     local form = "size[4,8]" ..
     "bgcolor[#000000aa;false]" ..
@@ -137,7 +144,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		if fields.spawn then
 			local pid = game.party[name]
 
-			game.clear_mobs_near(player:get_pos(), 200)
+			game.clear_mobs_near(player:get_pos())
 
 			for n in pairs(game.parties[game.party[name]]) do
 				local p = minetest.get_player_by_name(n)
@@ -155,7 +162,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			game.dungeons = game.dungeons - 1
 		elseif fields.deeper then
 			local pid = game.party[name]
-			game.clear_mobs_near(player:get_pos(), 200)
+			game.clear_mobs_near(player:get_pos())
 
 			for n in pairs(game.parties[game.party[name]]) do
 				local m = minetest.get_player_by_name(n):get_meta()
@@ -175,17 +182,22 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		for n, def in pairs(game.registered_dungeons) do
 			if plevel >= def.level then
 				can_enter = can_enter + 1
-				table.insert(levels, n)
+				table.insert(levels, n.."-"..def.level)
 			end
 		end
 
-		table.sort(levels, function(a,b) return a>b end)
+		table.sort(levels, function(a,b)
+			a = a:sub(a:find("-")+1)
+			b = b:sub(b:find("-")+1)
+
+			return a < b
+		end)
 
 		if can_enter < level then
 			minetest.chat_send_player(name, "<Gatekeeper> You do not have the gear needed to go so deep, "..name)
 		else
 			minetest.close_formspec(name, "game:d_enter_form")
-			game.start_dungeon(name, levels[level])
+			game.start_dungeon(name, levels[level]:sub(1, levels[level]:find("-")-1))
 		end
 	end
 end)

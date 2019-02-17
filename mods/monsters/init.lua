@@ -9,7 +9,7 @@ function game.register_mob(name, def)
 		hp_max = def.hp,
 		hp = def.hp,
 		anim = "none",
-		stepheight = def.stepheight or 1.5,
+		stepheight = def.stepheight or 1.1,
 		time = 0,
 		attack_time = 0,
 		drops = def.drops,

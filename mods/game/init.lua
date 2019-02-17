@@ -25,8 +25,8 @@ minetest.register_item(":", {
 	}
 })
 
-for name, def in pairs(minetest.registered_items) do
-	if not def.range and not name:find("map:") and not name:find("monsters:") then
+for name in pairs(minetest.registered_items) do
+	if name:find("game:") then
 		minetest.override_item(name, {range = 2})
 	end
 end
@@ -37,13 +37,15 @@ end
 
 minetest.set_mapgen_setting("mg_name", "singlenode", true)
 
-function game.clear_mobs_near(pos, radius)
-	if minetest.get_objects_inside_radius(pos, radius) == nil then
+function game.clear_mobs_near(pos)
+	if minetest.get_objects_inside_radius(pos, 300) == nil then
 		return
 	end
 
-	for _, obj in ipairs(minetest.get_objects_inside_radius(pos, radius)) do
-		obj:remove()
+	for _, obj in ipairs(minetest.get_objects_inside_radius(pos, 300)) do
+		if not obj:is_player() and obj:get_luaentity().name:find("monsters:") then
+			obj:remove()
+		end
 	end
 end
 
@@ -92,7 +94,7 @@ minetest.register_globalstep(function(dtime)
 
 			if meta:get_string("location") == "dungeon" and
 			minetest.check_player_privs(p:get_player_name(), "creative") == false then
-				local npos = minetest.find_node_near(pos, 20, "group:spawner")
+				local npos = minetest.find_node_near(pos, 100, "group:spawner")
 				if npos ~= nil then
 					local node = minetest.get_node(npos)
 
@@ -158,7 +160,7 @@ minetest.register_on_leaveplayer(function(player)
 
 	if meta:get_string("location") == "dungeon" then
 		if game.get_table_size(game.parties[game.party[name]]) == 1 then
-			game.clear_mobs_near(player:get_pos(), 150)
+			game.clear_mobs_near(player:get_pos())
 			game.dungeons = game.dungeons - 1
 		end
 
@@ -175,7 +177,7 @@ minetest.register_on_respawnplayer(function(player)
 
 	if meta:get_string("location") == "dungeon" then
 		if game.get_table_size(game.parties[game.party[name]]) <= 1 then
-			game.clear_mobs_near(player:get_pos(), 150)
+			game.clear_mobs_near(player:get_pos())
 		end
 
 		game.parties[game.party[name]].name = nil
