@@ -10,14 +10,14 @@ armor:register_armor("game:armor_basic", {
 armor:register_armor("game:armor_hot", {
 	description = "Hot Armor",
 	inventory_image = "game_inv_armor_hot.png",
-	groups = {armor_helmet = 2, armor_legs = 2, armor_torso = 2, armor_feet = 2, armor_heal=0, armor_use=0},
+	groups = {armor_helmet = 2, armor_legs = 2, armor_torso = 2, armor_feet = 2, armor_heal=5, armor_use=0},
 	armor_groups = {fleshy=25},
 })
 
 armor:register_armor("game:armor_fiery", {
 	description = "Fiery Armor",
 	inventory_image = "game_inv_armor_fiery.png",
-	groups = {armor_helmet = 3, armor_legs = 3, armor_torso = 3, armor_feet = 3, armor_heal=0, armor_use=0},
+	groups = {armor_helmet = 3, armor_legs = 3, armor_torso = 3, armor_feet = 3, armor_heal=10, armor_use=0},
 	armor_groups = {fleshy=35},
 })
 
@@ -32,7 +32,7 @@ crafting.register_recipe({
 crafting.register_recipe({
 	type = "inv",
 	output = "game:armor_hot",
-	items = {"xp:xp 40", "game:armor_basic", "game:fire_cube 4"},
+	items = {"xp:xp 40", "game:armor_basic", "game:fire_cube 2"},
 	always_known = false,
 	level = 2,
 })
@@ -40,7 +40,7 @@ crafting.register_recipe({
 crafting.register_recipe({
 	type = "inv",
 	output = "game:armor_fiery",
-	items = {"xp:xp 500", "game:armor_hot", "game:flame_cube 4"},
+	items = {"xp:xp 500", "game:armor_hot", "game:flame_cube 2"},
 	always_known = false,
 	level = 2,
 })

@@ -1,5 +1,5 @@
 minetest.register_craftitem("xp:xp", {
-	description = "Experience Points",
+	description = "Experience Point",
 	stack_max = 9999,
 	inventory_image = "xp_xp.png"
 })

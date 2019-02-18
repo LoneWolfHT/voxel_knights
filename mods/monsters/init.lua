@@ -223,14 +223,19 @@ function game.on_monster_death(self, puncher)
 
 		for drop, chance in pairs(self.drops) do
 			if math.random(1, chance) == 1 then
+				local i = ItemStack(drop)
+
 				if not drop:find("xp:xp") then
 					if inv:room_for_item("main", drop) == true then
 						inv:add_item("main", drop)
+						game.hud_add(pmember, "You got "..i:get_definition().description.." x"..i:get_count())
 					elseif inv:room_for_item("storage", drop) == true then
 						inv:add_item("storage", drop)
+						game.hud_add(pmember, "You got "..i:get_definition().description.." x"..i:get_count())
 					end
 				else
 					inv:add_item("xp", drop)
+					game.hud_add(pmember, "+"..i:get_count().." XP")
 				end
 			end
 		end
