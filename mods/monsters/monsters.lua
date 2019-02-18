@@ -5,13 +5,13 @@ game.register_mob("slime", {
 	view_range = 25,
 	speed = 4.1,
 	attack_capabilities = {
-		damage_groups = {fleshy = 2}
+		damage_groups = {fleshy = 1}
 	},
 	reach = 1.5,
 	face_offset = 0,
 	on_die = game.on_monster_death,
 	drops = {
-		["xp:xp"] = 5,
+		["xp:xp"] = 3,
 	},
 	animations = {
 		walk = {
@@ -36,14 +36,14 @@ game.register_mob("slime_fire", {
 	view_range = 25,
 	speed = 4,
 	attack_capabilities = {
-		damage_groups = {fleshy = 4, burns = 1}
+		damage_groups = {fleshy = 2, burns = 1}
 	},
 	reach = 1.5,
 	face_offset = 0,
 	on_die = game.on_monster_death,
 	drops = {
 		["xp:xp 3"] = 1,
-		["game:fire_cube"] = 20,
+		["game:fire_cube"] = 30,
 	},
 	animations = {
 		walk = {
