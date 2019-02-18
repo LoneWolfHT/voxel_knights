@@ -1,10 +1,13 @@
 game = {
 	spawn_pos = vector.new(52, 35, 165),
-	friend_requests = {}
+	friend_requests = {},
+	hud = {},
+	huds = {}
 }
 
 local modstorage = minetest.get_mod_storage()
 
+dofile(minetest.get_modpath("game").."/hud.lua")
 dofile(minetest.get_modpath("game").."/dungeons.lua")
 dofile(minetest.get_modpath("game").."/items.lua")
 dofile(minetest.get_modpath("game").."/awards.lua")
@@ -117,6 +120,19 @@ minetest.register_on_joinplayer(function(player)
 
 	player:set_hp(20, {type = "set_hp"})
 	game.friend_requests[name] = {}
+	game.hud[name] = {}
+	game.huds[name] = {}
+
+	for n = 0.02, 0.1, 0.02 do
+		game.huds[name][n*50] = player:hud_add({
+			hud_elem_type = "text",
+			position = {x=0.5, y=0.52+n},
+			scale = {x = 100, y = 100},
+			text = "",
+			alignment = {x = 0, y = 0},
+			number = 0xffc837,
+		})
+	end
 
 	if meta:get_string("location") == "dungeon" then
 		if game.get_table_size(game.parties) ~= 0 and game.party[name] then
