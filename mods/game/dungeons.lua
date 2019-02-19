@@ -97,7 +97,6 @@ end
 function game.show_dungeon_exit_form(name)
 
     local form = "size[5,1.1]" ..
-    "bgcolor[#000000aa;false]" ..
     "image_button_exit[0.1,0.3;2.5,0.6;button.png;spawn;Go To Spawn]" ..
     "image_button_exit[2.6,0.3;2.5,0.6;button.png;deeper;Go Deeper]"
 
