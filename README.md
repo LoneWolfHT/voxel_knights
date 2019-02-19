@@ -1,4 +1,4 @@
-# blocky_knights
+# Voxel Knights
 WIP Dungeon Exploring PvE game
 
 Mod licenses are in the mod folders. Any changes to mods will be listed here if I remember to.
