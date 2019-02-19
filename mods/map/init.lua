@@ -5,7 +5,9 @@ function map.place_lobby()
 	local pos = {x = 0, y = 0, z = 0}
 
 	local path = minetest.get_modpath("map") .. "/schematics/lobby.mts"
+	minetest.emerge_area(pos, vector.add(pos, 275))
 	minetest.place_schematic(pos, path, "0", nil, true)
+	minetest.after(5, minetest.fix_light, pos, vector.add(pos, 275))
 
 	minetest.log("Done placing lobby...")
 
@@ -189,10 +191,13 @@ minetest.register_node("map:gate", {
 		}
 	},
 	on_rightclick = function(pos, _, player)
-		if game.get_mobs_near(pos, 100) == 0 then
+		local n = player:get_player_name()
+		local p1 = vector.multiply(vector.new(-500, 0, -500), game.dungeons+1)
+
+		if game.get_mobs_near(p1, vector.add(p1, game.registered_dungeons[game.current_dungeon[n]].size)) == 0 then
 			minetest.remove_node(pos)
 		else
-			minetest.chat_send_player(player:get_player_name(),
+			minetest.chat_send_player(n,
 			"You have to kill all enemies before you can open this gate")
 		end
 	end

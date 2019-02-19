@@ -11,7 +11,7 @@ local function table_remove(table, string)
 	return table
 end
 
-local function table_find(t1, string)
+function game.table_find(t1, string)
 	for _, v in ipairs(t1) do
 		if v == string then
 			return true
@@ -35,7 +35,7 @@ local function both_friends(p1, p2)
 		p2_f = {p2_f}
 	end
 
-	if table_find(p1_f, name2) == true and table_find(p2_f, name1) == true then
+	if game.table_find(p1_f, name2) == true and game.table_find(p2_f, name1) == true then
 		return true
 	else
 		return false
@@ -58,7 +58,7 @@ sfinv.register_page("game:friends", {
 			friends = {friends}
 		end
 
-		if friends ~= nil then
+		if friends then
 			friends_string = ""
 
 			for id, n in ipairs(friends) do
@@ -66,7 +66,7 @@ sfinv.register_page("game:friends", {
 				local fobj = minetest.get_player_by_name(n)
 
 				if fobj and fobj:get_meta():get_string("location") == "dungeon" then
-					loc = "In the dungeon"
+					loc = game.registered_dungeons[game.current_dungeon[n]].description
 				end
 
 				if fobj then

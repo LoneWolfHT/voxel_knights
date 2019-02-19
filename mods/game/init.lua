@@ -41,11 +41,11 @@ end
 minetest.set_mapgen_setting("mg_name", "singlenode", true)
 
 function game.clear_mobs_near(pos)
-	if minetest.get_objects_inside_radius(pos, 300) == nil then
+	if minetest.get_objects_inside_radius(pos, 50) == nil then
 		return
 	end
 
-	for _, obj in ipairs(minetest.get_objects_inside_radius(pos, 300)) do
+	for _, obj in ipairs(minetest.get_objects_inside_radius(pos, 50)) do
 		if not obj:is_player() and obj:get_luaentity().name:find("monsters:") then
 			obj:remove()
 		end
@@ -58,15 +58,25 @@ function game.update_inventories()
 	end
 end
 
-function game.get_mobs_near(pos, radius)
-	if minetest.get_objects_inside_radius(pos, radius) == nil then
+function vector.greater(v1, v2)
+	if v1.x >= v2.x and v1.z >= v2.z and v1.y >= v2.y then
+		return true
+	else
+		return false
+	end
+end
+
+function game.get_mobs_near(p1, p2)
+	if minetest.get_objects_inside_radius(vector.divide(p2, 2), 100) == nil then
 		return
 	end
 
 	local count = 0
 
-	for _, obj in ipairs(minetest.get_objects_inside_radius(pos, radius)) do
-		if not obj:is_player() and obj:get_luaentity().name:find("monsters:") then
+	for _, obj in ipairs(minetest.get_objects_inside_radius(vector.divide(p2, 2), 100)) do
+		local p = obj:get_pos()
+		if not obj:is_player() and obj:get_luaentity().name:find("monsters:") and
+		vector.greater(p, p1) == true and vector.greater(p2, p) == true then
 			count = count + 1
 		end
 	end

@@ -1,9 +1,10 @@
 game.dungeons = 0
-game.dungeon_start_pos = vector.new(-777, -777, -777)
+game.dungeon_start_pos = vector.new(-500, 0, -500)
 game.registered_dungeons = {}
 game.parties = {}
 game.partyid = 0
 game.party = {}
+game.current_dungeon = {}
 
 function game.start_dungeon(name, level)
 	local pos = vector.multiply(game.dungeon_start_pos, game.dungeons+1)
@@ -18,12 +19,13 @@ function game.start_dungeon(name, level)
 		game.place_dungeon(dname, pos)
 		game.clear_mobs_near(pos)
 
-		local spawnpos = minetest.find_node_near(pos, 200, "map:spawn_pos")
+		local spawnpos = minetest.find_node_near(pos, 100, "map:spawn_pos")
 
 		if spawnpos then
 			player:set_pos(spawnpos)
 			minetest.remove_node(spawnpos)
 			minetest.chat_send_player(name, "You are now in "..game.registered_dungeons[dname].description)
+			game.current_dungeon[name] = dname
 			meta:set_string("location", "dungeon");
 			game.party[name] = game.partyid
 			game.parties[game.partyid] = {[name] = 1}
@@ -32,7 +34,7 @@ function game.start_dungeon(name, level)
 		game.place_dungeon(dname, pos)
 		game.clear_mobs_near(pos)
 
-		local spawnpos = minetest.find_node_near(pos, 200, "map:spawn_pos")
+		local spawnpos = minetest.find_node_near(pos, 100, "map:spawn_pos")
 
 		game.parties[game.partyid] = {}
 
@@ -42,6 +44,7 @@ function game.start_dungeon(name, level)
 
 			player:set_pos(spawnpos)
 			minetest.chat_send_player(pname, "You are now in "..game.registered_dungeons[dname].description)
+			game.current_dungeon[name] = dname
 			meta:set_string("location", "dungeon");
 			game.party[pname] = game.partyid
 			game.parties[game.partyid][pname] = 1
@@ -57,11 +60,9 @@ end
 function game.place_dungeon(name, pos)
 	for n, def in pairs(game.registered_dungeons) do
 		if n == name then
-			if def.needs_clearing then
-				minetest.delete_area(pos, vector.add(pos, def.size))
-			end
-
+			minetest.emerge_area(vector.subtract(pos, 50), vector.add(pos, 50))
 			minetest.place_schematic(pos, def.path, def.rot, nil, true, nil)
+			minetest.after(5, minetest.fix_light, vector.subtract(pos, 50), vector.add(pos, 50))
 			return "Dungeon placed"
 		end
 	end
@@ -105,23 +106,26 @@ end
 
 function game.show_dungeon_enter_form(name)
 	local levels = {}
+	local found = {}
 	local plevel = minetest.get_player_by_name(name):get_meta():get_int("skill_level")
 
 	for _, def in pairs(game.registered_dungeons) do
-		if plevel >= def.level then
-			table.insert(levels, "#ffc837Level "..def.level..": "..def.description)
-		else
-			table.insert(levels, "#9d9d9dLevel "..def.level..": ???")
+		if not game.table_find(found, def.level) then
+			table.insert(found, def.level)
+
+			if def.level <= plevel then
+				table.insert(levels, "#ffc837Dungeon Level #"..def.level)
+			else
+				table.insert(levels, "#9d9d9dDungeon Level #"..def.level)
+			end
 		end
 	end
 
 	table.sort(levels, function(a,b)
-		if a ~= nil and b ~= nil then
-			a = a:sub(a:find("l")+2, a:find(":")-1)
-			b = b:sub(b:find("l")+2, b:find(":")-1)
-		end
+		a = a:sub(a:find("#")+1)
+		b = b:sub(b:find("#")+1)
 
-		return a < b
+		return a > b
 	end)
 
     local form = "size[4,8]" ..
@@ -153,6 +157,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				p:set_pos(game.spawn_pos)
 				p:set_hp(20, {type = "set_hp"})
 				m:set_int("depth", depth+1)
+				game.current_dungeon[n] = nil
 				m:set_string("location", "spawn")
 				game.party[n] = nil
 			end
@@ -160,6 +165,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			game.parties[pid] = nil
 
 			game.dungeons = game.dungeons - 1
+			game.update_inventories()
 		elseif fields.deeper then
 			local pid = game.party[name]
 			game.clear_mobs_near(player:get_pos())
@@ -170,34 +176,21 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			end
 
 			game.dungeons = game.dungeons - 1
-			game.start_dungeon(game.parties[game.party[name]], meta:get_int("skill_level"))
+			game.start_dungeon(
+				game.parties[game.party[name]],
+				game.registered_dungeons[game.current_dungeon[name]].level
+			)
 			game.parties[pid] = nil
 		end
 	elseif formname == "game:d_enter_form" and fields.level and fields.level:find("DCL") then
 		local level = tonumber(fields.level:sub(5))
-		local can_enter = 0
-		local levels = {}
 		local plevel = minetest.get_player_by_name(name):get_meta():get_int("skill_level")
 
-		for n, def in pairs(game.registered_dungeons) do
-			if plevel >= def.level then
-				can_enter = can_enter + 1
-				table.insert(levels, n.."-"..def.level)
-			end
-		end
-
-		table.sort(levels, function(a,b)
-			a = a:sub(a:find("-")+1)
-			b = b:sub(b:find("-")+1)
-
-			return a < b
-		end)
-
-		if can_enter < level then
+		if plevel < level then
 			minetest.chat_send_player(name, "<Gatekeeper> You do not have the gear needed to go so deep, "..name)
 		else
 			minetest.close_formspec(name, "game:d_enter_form")
-			game.start_dungeon(name, levels[level]:sub(1, levels[level]:find("-")-1))
+			game.start_dungeon(name, level)
 		end
 	end
 end)

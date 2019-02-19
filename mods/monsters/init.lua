@@ -1,5 +1,5 @@
 game.mob_step = 0.3
-game.attack_step = 1.5
+game.attack_step = 1.7
 
 function game.register_mob(name, def)
 	local ent = {
@@ -15,6 +15,7 @@ function game.register_mob(name, def)
 		drops = def.drops,
 		visual = "mesh",
 		mesh = def.mesh,
+		static_save = true,
         visual_size = def.visual_size or {x=1, y=1, z=1},
 		textures = {def.texture},
 		collisionbox = def.collisionbox or {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
@@ -65,7 +66,7 @@ function game.register_mob(name, def)
 								self.anim = "attack"
 							end
 
-							if vector.distance(ppos, pos) <= def.reach/2 then
+							if vector.distance(ppos, pos) <= def.reach-0.2 then
 								obj:set_velocity(vector.new(0, -9, 0))
 							end
 
