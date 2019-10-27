@@ -1,0 +1,1 @@
+A cleaner, simpler solution to having an advanced inventory in Minetest.
