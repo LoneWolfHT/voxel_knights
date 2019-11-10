@@ -10,7 +10,6 @@ local dirs = { -- Lua files to include
 	"stairs.lua",
 	"map.lua",
 	"structure_nodes.lua",
-	"special.lua",
 	"stations.lua",
 }
 
