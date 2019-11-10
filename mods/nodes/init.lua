@@ -1,9 +1,19 @@
 nodes = {}
 
-local dirs = minetest.get_dir_list(minetest.get_modpath("nodes"), false) -- Include all .lua files
+--
+--- Include the rest of the mod's lua files
+--
+
+local dirs = { -- Lua files to include
+	"posts.lua",
+	"doors.lua",
+	"stairs.lua",
+	"map.lua",
+	"structure_nodes.lua",
+	"special.lua",
+	"stations.lua",
+}
 
 for _, filename in ipairs(dirs) do
-	if filename:find(".lua") and filename ~= "init.lua" then
-		dofile(minetest.get_modpath("nodes").."/"..filename)
-	end
+	dofile(minetest.get_modpath("nodes").."/"..filename)
 end

@@ -5,14 +5,19 @@ minetest.set_mapgen_setting("mgflat_spflags", "hills, lakes", true)
 minetest.set_mapgen_setting("mgflat_hill_threshhold", "0.75", true)
 minetest.set_mapgen_setting("mgflat_np_terrain", "noise_params_2d 0, 1, (600, 600, 600), 7244, 5, 0.6, 2.5, eased", true)
 
-local dirs = minetest.get_dir_list(minetest.get_modpath("mapgen"), false) -- Include all .lua files
-
 mapgen = {
 	structures = minetest.deserialize(minetest.get_mod_storage():get_string("structures") ~= "" or "{}") or {}
 }
 
+--
+--- Include the rest of the mod's lua files
+--
+
+local dirs = {
+	"biomes.lua",
+	"structures.lua",
+} -- Lua files to include
+
 for _, filename in ipairs(dirs) do
-	if filename:find(".lua") and filename ~= "init.lua" then
-		dofile(minetest.get_modpath("mapgen").."/"..filename)
-	end
+	dofile(minetest.get_modpath("mapgen").."/"..filename)
 end
