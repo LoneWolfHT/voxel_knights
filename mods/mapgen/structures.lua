@@ -1,5 +1,7 @@
 local mods = minetest.get_mod_storage()
 
+mapgen.structures = minetest.deserialize(mods:get_string("structures") ~= "" or "{}") or {}
+
 function mapgen.register_structure(name, rarity, placeon)
 	mapgen.structures[name] = {}
 
