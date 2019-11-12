@@ -17,6 +17,7 @@ minetest.register_lbm({ -- Loads nodes placed by schematics that have meta
 --
 
 local dirs = { -- Lua files to include
+	"fire.lua",
 	"posts.lua",
 	"doors.lua",
 	"stairs.lua",
