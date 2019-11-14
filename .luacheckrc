@@ -2,7 +2,7 @@ unused_args = false
 allow_defined_top = true
 
 globals = {
-    "minetest", "sfinv", "nodes", "player", "mapgen"
+    "minetest", "vkore", "sfinv", "nodes", "player", "mapgen"
 }
 
 read_globals = {
