@@ -17,25 +17,6 @@ minetest.register_biome({
 	humidity_point = 35,
 })
 
-minetest.register_decoration({
-	deco_type = "schematic",
-	place_on = "nodes:grass",
-	sidelen = 1,
-	noise_params = {
-		offset = -0.01,
-		scale = 0.03,
-		spread = {x = 200, y = 130, z = 200},
-		seed = 777,
-		octaves = 13,
-	},
-	biomes = {"green_biome"},
-	y_min = 7,
-	y_max = 100,
-	schematic = "schems/tree.mts",
-	flags = "place_center_x, place_center_z",
-	rotation = "random",
-})
-
 minetest.register_biome({
 	name = "mountain_biome",
 	node_top = "nodes:snow",

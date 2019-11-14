@@ -83,13 +83,6 @@ minetest.register_node("nodes:leaves", {
 })
 
 --
---- Doors
---
-
-nodes.register_door("wooden", "nodes_door_wooden.png")
-nodes.register_door("iron", "nodes_iron.png")
-
---
 --- Misc
 --
 

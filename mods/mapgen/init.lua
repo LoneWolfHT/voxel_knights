@@ -7,6 +7,7 @@ minetest.set_mapgen_setting("mgflat_np_terrain", "noise_params_2d 0, 1, (600, 60
 
 mapgen = {
 	structures = {},
+	registered_structures = {},
 }
 
 --
@@ -16,6 +17,7 @@ mapgen = {
 local dirs = {
 	"biomes.lua",
 	"structures.lua",
+	"decorations.lua",
 } -- Lua files to include
 
 for _, filename in ipairs(dirs) do
