@@ -58,14 +58,14 @@ minetest.register_lbm({
 						return true
 					end
 				end
-
-				if nodename == "ignore" then
-					result = "Will cut into the edge of the map"
-					return true
-				end
 			end)
 
 			pos.y = pos.y - 1
+
+			if math.abs(pos.x) + structure.radius >= vkore.settings.world_size or
+			math.abs(pos.z) + structure.radius >= vkore.settings.world_size then
+				result = "Too close to map edge"
+			end
 
 			if not result then
 				result = minetest.place_schematic(

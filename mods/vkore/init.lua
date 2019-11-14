@@ -1,6 +1,7 @@
 vkore = {
 	settings = {
 		game_mode = "dev",
+		world_size = 3200,
 	},
 }
 

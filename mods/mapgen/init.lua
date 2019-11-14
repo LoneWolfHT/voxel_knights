@@ -1,4 +1,4 @@
-minetest.set_mapgen_setting("mapgen_limit", "3200", true)
+minetest.set_mapgen_setting("mapgen_limit", tostring(vkore.settings.world_size), true)
 minetest.set_mapgen_setting("mg_name", "flat", true)
 minetest.set_mapgen_setting("mg_flags", "nocaves, nodungeons, light, decorations, biomes", true)
 minetest.set_mapgen_setting("mgflat_spflags", "hills, lakes", true)
