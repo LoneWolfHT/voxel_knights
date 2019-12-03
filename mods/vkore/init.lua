@@ -2,6 +2,7 @@ vkore = {
 	settings = {
 		game_mode = "dev",
 		world_size = 3200,
+		party_size_limit = 4,
 	},
 }
 
