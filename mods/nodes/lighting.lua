@@ -7,6 +7,18 @@ minetest.register_node("nodes:torch_wall", {
         aspect_h = 32,
         length = 2.0,
 	}}},
+	selection_box = {
+		type = "fixed",
+		fixed = {
+			{-0.15, -0.5, -0.5, 0.15, 0.11, 0.5},
+		},
+	},
+	collision_box = {
+		type = "fixed",
+		fixed = {
+			{-0.15, -0.5, -0.5, 0.15, 0.11, 0.5},
+		},
+	},
 	mesh = "torch_wall.obj",
 	paramtype = "light",
 	paramtype2 = "wallmounted",
@@ -24,6 +36,18 @@ minetest.register_node("nodes:torch", {
         aspect_h = 32,
         length = 2.0,
 	}}},
+	selection_box = {
+		type = "fixed",
+		fixed = {
+			{-0.11, -0.5, -0.11, 0.11, 0.45, 0.11},
+		},
+	},
+	collision_box = {
+		type = "fixed",
+		fixed = {
+			{-0.11, -0.5, -0.11, 0.11, 0.45, 0.11},
+		},
+	},
 	mesh = "torch.obj",
 	paramtype = "light",
 	sunlight_propogates = true,
