@@ -21,3 +21,12 @@ nodes.register_stair_and_slab("stone_brick", {
 	tiles = {"nodes_stone_brick.png"},
 	groups = {unbreakable = 1},
 })
+
+minetest.register_node("nodes:cobweb", {
+	description = "Cobweb",
+	drawtype = "plantlike",
+	tiles = {"nodes_cobweb.png"},
+	visual_scale = 1.5,
+	groups = {unbreakable = 1},
+	walkable = false,
+})
