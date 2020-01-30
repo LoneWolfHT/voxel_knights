@@ -25,6 +25,7 @@ local dirs = { -- Lua files to include
 	"map.lua",
 	"structure_nodes.lua",
 	"stations.lua",
+	"treasure_chests.lua"
 }
 
 for _, filename in ipairs(dirs) do
