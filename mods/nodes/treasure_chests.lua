@@ -14,7 +14,7 @@ function nodes.register_lootbox(name, def)
             local inv = meta:get_inventory()
             local spos = pos.x .. "," .. pos.y .. "," .. pos.z
             local formspec = [[
-                size[9.95,11]
+                size[10,11]
                 real_coordinates[true]
                 list[nodemeta:]] .. spos .. [[;main;0.15,0.15;8,4;]
                 button[3,5.1;4,0.8;take_all;Take All]
@@ -51,7 +51,6 @@ function nodes.register_lootbox(name, def)
             end
         end,
         on_receive_fields = function(pos, formname, fields, sender)
-            minetest.chat_send_all(dump(formname))
             if fields.take_all then
                 local playerinv = sender:get_inventory()
                 local inv = minetest.get_meta(pos):get_inventory()
