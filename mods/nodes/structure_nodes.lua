@@ -24,9 +24,11 @@ nodes.register_stair_and_slab("stone_brick", {
 
 minetest.register_node("nodes:cobweb", {
 	description = "Cobweb",
-	drawtype = "plantlike",
+	drawtype = "firelike",
 	tiles = {"nodes_cobweb.png"},
-	visual_scale = 1.5,
+	paramtype = "light",
+	sunlight_propagates = true,
+	visual_scale = 1.3,
 	groups = {unbreakable = 1},
 	walkable = false,
 })

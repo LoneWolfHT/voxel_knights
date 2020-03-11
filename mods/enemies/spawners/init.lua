@@ -20,7 +20,21 @@ function spawners.register_spawner(entity, size, func)
             fixed = {-size.x/2, -size.y/2, -size.z/2, size.x/2, size.y/2, size.z/2}
         },
         on_destruct = func or function(pos)
-           minetest.add_entity(pos, entity) 
+            if vkore.settings.game_mode ~= "dev" then
+                minetest.add_entity(pos, entity)
+            end
         end,
     })
 end
+
+minetest.register_lbm({
+    label = "Activate monster spawners",
+    name = "spawners:activate_spawners",
+    nodenames = {"group:spawner"},
+    run_at_every_load = true,
+    action = function(pos, node)
+        if vkore.settings.game_mode ~= "dev" then
+            minetest.remove_node(pos)
+        end
+    end,
+})
