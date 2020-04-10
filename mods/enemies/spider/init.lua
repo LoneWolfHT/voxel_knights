@@ -61,9 +61,14 @@ minetest.register_entity("spider:spider", {
 	stepheight = 0.6,
 	buoyancy = 1,
 	lung_capacity = 5, 		-- seconds
-	max_hp = 5,
+	hp = 15,
+	max_hp = 15,
 	on_step = mobkit.stepfunc,
-	on_activate = mobkit.actfunc,
+	on_activate = function(self, staticdata, dtime_s)
+		self.attack_ok = true
+	
+		mobkit.actfunc(self, staticdata, dtime_s)
+	end,
 	get_staticdata = mobkit.statfunc,
 	logic = function(self)
 		mobkit.vitals(self)
@@ -113,13 +118,18 @@ minetest.register_entity("spider:spider", {
 			loop = true
 		},
 	},
+	gold = 10,
+	gold_max = 11,
+	xp = 1,
 	max_speed = 5,
 	jump_height = 3.5,
 	view_range = 20,
 	attack={
 		range = 2,
-		damage_groups = {fleshy = 6}
+		interval = 1,
+		damage_groups = {fleshy = 5}
 	},
+	on_punch = mobkit_custom.on_punch,
 	armor_groups = {fleshy=0}
 })
 
@@ -130,4 +140,5 @@ spiderdef.inventory_image = "nodes_cobweb.png"
 
 minetest.register_node("spider:spider_cover", spiderdef)
 
-spawners.register_spawner("spider:spider", vector.new(1.5, 1, 1.5))
+spawners.register_dungeon_spawner("spider:spider", vector.new(1.5, 1, 1.5))
+spawners.register_overworld_spawner("spider:spider", 3)
