@@ -35,13 +35,13 @@ minetest.register_lbm({
 	nodenames = {"group:structure_placeholder"},
 	run_at_every_load = true,
 	action = function(pos, node)
-		local schemname = get_schemname(node.name)
+		local schemname = mapgen.get_schemname(node.name)
 		local result
 		local structure = mapgen.registered_structures[schemname]
 
 		minetest.remove_node(pos)
 
-		if structure_is_nearby(pos, mapgen.registered_structures[schemname].bubble) == false then
+		if mapgen.structure_is_nearby(pos, mapgen.registered_structures[schemname].bubble) == false then
 			vkore.scan_flood(pos, structure.radius, function(p, dist)
 				local nodename = minetest.get_node(p).name
 
@@ -93,12 +93,12 @@ minetest.register_lbm({
 	end
 })
 
-function get_schemname(name)
+function mapgen.get_schemname(name)
 	return name:sub(name:find(":")+1)
 end
 
 -- Check to see if a structure placed at pos will break another structure's 'bubble' with its own
-function structure_is_nearby(pos, bubble)
+function mapgen.structure_is_nearby(pos, bubble)
 	for structure, positions in pairs(mapgen.structures) do
 		local bubble2 = mapgen.registered_structures[structure].bubble
 
@@ -118,13 +118,13 @@ function mapgen.new_structure(schemname, pos)
 end
 
 mapgen.register_structure("town1", {
-	rarity = 0.00001,
+	rarity = 0.00005,
 	radius = 40,
 	bubble = 100,
 })
 
-mapgen.register_structure("dungeon1", {
-	rarity = 0.00001,
-	radius = 7,
-	bubble = 25,
-})
+-- mapgen.register_structure("dungeon1", {
+-- 	rarity = 0.00001,
+-- 	radius = 7,
+-- 	bubble = 25,
+-- })

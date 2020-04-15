@@ -3,9 +3,9 @@ minetest.register_node("nodes:torch_wall", {
 	drawtype = "mesh",
 	tiles = {{name = "nodes_torch.png", animation = {
 		type = "vertical_frames",
-        aspect_w = 32,
-        aspect_h = 32,
-        length = 2.0,
+		aspect_w = 32,
+		aspect_h = 32,
+		length = 2.0,
 	}}},
 	selection_box = {
 		type = "fixed",
@@ -32,9 +32,9 @@ minetest.register_node("nodes:torch", {
 	drawtype = "mesh",
 	tiles = {{name = "nodes_torch.png", animation = {
 		type = "vertical_frames",
-        aspect_w = 32,
-        aspect_h = 32,
-        length = 2.0,
+		aspect_w = 32,
+		aspect_h = 32,
+		length = 2.0,
 	}}},
 	selection_box = {
 		type = "fixed",

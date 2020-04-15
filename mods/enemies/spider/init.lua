@@ -4,14 +4,11 @@ local GOTO_COVER = 3
 local ATTACK = 4
 
 local function custom_hq_goto(self, prty, tpos) -- Improved hq_goto
-	local nextpos = pathfinder.find(self.object:get_pos(), tpos, 50)
-
-	
 	local func = function(funcself)
 		if mobkit.is_queue_empty_low(funcself) and funcself.isonground then
 			local pos = self.object:get_pos()
 			local nextpos = pathfinder.find(pos, tpos, 50)
-			
+
 			if nextpos ~= nil and vector.distance(nextpos[2], tpos) >= 1 then
 				mobkit.goto_next_waypoint(funcself, nextpos[2])
 			else
@@ -66,7 +63,7 @@ minetest.register_entity("spider:spider", {
 	on_step = mobkit.stepfunc,
 	on_activate = function(self, staticdata, dtime_s)
 		self.attack_ok = true
-	
+
 		mobkit.actfunc(self, staticdata, dtime_s)
 	end,
 	get_staticdata = mobkit.statfunc,
@@ -87,11 +84,12 @@ minetest.register_entity("spider:spider", {
 			local nearby_player = mobkit.get_nearby_player(self)
 
 			if nearby_player and priority < ATTACK and mobkit.recall(self, "ambushing") ~= true and -- Not attacking/ambushing
-			vector.distance(nearby_player:get_pos(), pos) <= 10 then -- If not attacking nearby player
+			vector.distance(nearby_player:get_pos(), pos) <= 10 then -- Not attacking nearby player
 				mobkit.hq_hunt(self, ATTACK, nearby_player)
 			end
 
-			if priority < GOTO_COVER and minetest.get_node(pos).name ~= "spider:spider_cover" then -- If not finding cover or hiding in cover
+			-- If not finding cover or hiding in cover
+			if priority < GOTO_COVER and minetest.get_node(pos).name ~= "spider:spider_cover" then
 				local nearest_cover = minetest.find_node_near(pos, 20, "spider:spider_cover")
 
 				if nearest_cover then
@@ -133,7 +131,7 @@ minetest.register_entity("spider:spider", {
 	armor_groups = {fleshy=0}
 })
 
-local spiderdef = minetest.registered_nodes["nodes:cobweb"]
+local spiderdef = table.copy(minetest.registered_nodes["nodes:cobweb"])
 
 spiderdef.description = "Spider cover. Spiders will hide in this node and ambush players"
 spiderdef.inventory_image = "nodes_cobweb.png"

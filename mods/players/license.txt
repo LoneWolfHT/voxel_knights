@@ -1,5 +1,6 @@
 MIT License
 
+All mods that don't give a license
 Copyright (c) 2019-2020 LoneWolfHT
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
