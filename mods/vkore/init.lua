@@ -2,7 +2,6 @@ vkore = {
 	settings = {
 		game_mode = "dev",
 		world_size = 3200,
-		player_limit = 5,
 	},
 }
 
@@ -47,3 +46,13 @@ function vkore.scan_flood(pos, range, func)
 		q = nxt
 	end
 end
+
+-- add 'all' group to all registered nodes for use with group-based builtin functions like find_nodes_in_area()
+minetest.register_on_mods_loaded(function()
+	for name, def in pairs(minetest.registered_nodes) do
+		if not def.groups then def.groups = {} end
+		def.groups.all = 1
+
+		minetest.override_item(name, {groups = def.groups})
+	end
+end)
