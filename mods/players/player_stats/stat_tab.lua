@@ -44,11 +44,12 @@ sfinv.register_page("sfinv:stats", {
 			if name:find("stat_") then
 				local stat = name:sub(name:find("_")+1)
 				local meta = player:get_meta()
+				local statcount = meta:get_int(stat)
 				local available_statpoints = meta:get_int("available_statpoints")
 
-				if available_statpoints > 0 then
+				if available_statpoints > 0 and statcount < 100 then
 					meta:set_int("available_statpoints", available_statpoints - 1)
-					meta:set_int(stat, meta:get_int(stat) + 1)
+					meta:set_int(stat, statcount + 1)
 				end
 
 				sfinv.set_page(player, context.page)
