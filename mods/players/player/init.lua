@@ -1,4 +1,4 @@
-player = {
+players = {
 	party = {},
 }
 
@@ -8,6 +8,10 @@ player = {
 
 local dirs = { -- Lua files to include
 	"inventory.lua",
+	"hud_info.lua",
+	"gold.lua",
+	"experience.lua",
+	"regen.lua"
 }
 
 for _, filename in ipairs(dirs) do

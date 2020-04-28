@@ -5,12 +5,6 @@ party = {
 
 local add_glow_particlespawner
 
-minetest.register_on_prejoinplayer(function(player)
-	if #minetest.get_connected_players() >= vkore.settings.player_limit then
-		return "There are too many players online. Ask the server owner to increase the party size limit"
-	end
-end)
-
 --
 --- To use these just minetest.add_node(pos, {name = "party:party_zone"}) and set the meta string 'destination'
 --- to the name of the 'dungeon' they're entering
@@ -70,7 +64,6 @@ add_glow_particlespawner = function(pos)
 		collisiondetection = false,
 		collision_removal = false,
 		object_collision = false,
-		attached = ObjectRef,
 		vertical = true,
 		texture = "party_glow.png",
 		glow = 10,
