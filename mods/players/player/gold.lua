@@ -24,7 +24,7 @@ minetest.register_on_leaveplayer(function(player)
 	gold.huds[player:get_player_name()] = nil
 end)
 
-function players.set_gold(player, gold)
+function players.set_gold(player, newgold)
 	local name
 	local meta = player:get_meta()
 
@@ -44,15 +44,15 @@ function players.set_gold(player, gold)
 		position = {x=0, y=1},
 		name = "gold_text",
 		scale = {x=100, y=100},
-		text = ": "..gold,
+		text = ": "..newgold,
 		number = 0xffd200,
 		alignment = {x=1, y=0},
 		offset = {x=48, y=-24},
 		z_index = 0,
 	})
 
-	players.hud_info_add(player, "+"..gold - meta:get_int("gold").." gold")
-	meta:set_int("gold", gold)
+	players.hud_info_add(player, "+"..newgold - meta:get_int("gold").." gold")
+	meta:set_int("gold", newgold)
 end
 
 function players.get_gold(player)

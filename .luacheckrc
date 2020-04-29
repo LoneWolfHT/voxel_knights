@@ -1,5 +1,3 @@
-unused_args = false
-
 globals = {
 	"vkore", "player_stats", "hb", "players", "gold",
 	"party", "nodes", "mapgen", "spawners", "pathfinder",
@@ -22,7 +20,7 @@ exclude_files = {
 	"mods/enemies/pathfinder/astar_core.lua",
 	"mods/hudbars/",
 	"mods/mobkit/",
-	"mods/sfinv",
+	"mods/sfinv/",
 	"mods/screwdriver2/",
 	"mods/creative/",
 	"mods/sscsm/",
