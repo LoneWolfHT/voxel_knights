@@ -119,6 +119,7 @@ minetest.register_entity("spider:spider", {
 	gold = 10,
 	gold_max = 11,
 	xp = 1,
+	xp_max = 3,
 	max_speed = 5,
 	jump_height = 3.5,
 	view_range = 20,

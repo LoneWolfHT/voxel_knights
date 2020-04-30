@@ -28,7 +28,7 @@ sfinv.register_page("sfinv:stats", {
 				stat:gsub("^.", string.upper),
 				--stat name tooltip
 				stat,
-				player_stats.stats[stat],
+				desc,
 				--stat count
 				ypos,
 				meta:get_int(stat)

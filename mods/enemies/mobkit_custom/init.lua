@@ -26,6 +26,7 @@ function mobkit.hq_die(self)
 
 		if puncher then
 			players.set_gold(puncher, players.get_gold(puncher) + math.random(self.gold or 0, self.gold_max or self.gold or 0))
+			players.add_xp(puncher, math.random(self.xp or 0, self.xp_max or self.xp or 0))
 		end
 	end
 
