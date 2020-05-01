@@ -57,9 +57,9 @@ minetest.register_entity("spider:spider", {
 	glow = 1,
 	stepheight = 0.6,
 	buoyancy = 1,
-	lung_capacity = 5, 		-- seconds
-	hp = 15,
-	max_hp = 15,
+	lung_capacity = 3, -- seconds
+	hp = 25,
+	max_hp = 35,
 	on_step = mobkit.stepfunc,
 	on_activate = function(self, staticdata, dtime_s)
 		self.attack_ok = true
@@ -116,20 +116,20 @@ minetest.register_entity("spider:spider", {
 			loop = true
 		},
 	},
-	gold = 10,
-	gold_max = 11,
-	xp = 1,
+	gold = 1,
+	gold_max = 3,
+	xp = 2,
 	xp_max = 3,
 	max_speed = 5,
 	jump_height = 3.5,
 	view_range = 20,
 	attack={
-		range = 2,
+		range = 3,
 		interval = 1,
 		damage_groups = {fleshy = 5}
 	},
 	on_punch = mobkit_custom.on_punch,
-	armor_groups = {fleshy=0}
+	armor_groups = {fleshy=10}
 })
 
 local spiderdef = table.copy(minetest.registered_nodes["nodes:cobweb"])
