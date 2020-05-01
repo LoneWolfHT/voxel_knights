@@ -2,6 +2,10 @@ players = {
 	party = {},
 }
 
+minetest.register_on_newplayer(function(player)
+	player:get_inventory():add_item("main", "swords:sword")
+end)
+
 --
 --- Include the rest of the mod's lua files
 --

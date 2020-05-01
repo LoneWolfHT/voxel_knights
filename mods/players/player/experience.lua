@@ -23,4 +23,5 @@ function players.add_xp(player, xp)
 
 	meta:set_int("xp", new_xp)
 	hb.change_hudbar(player, "xp", new_xp, meta:get_int("level") * 50)
+	players.hud_info_add(player, ("+%d XP"):format(xp))
 end
