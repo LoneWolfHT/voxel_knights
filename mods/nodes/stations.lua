@@ -3,7 +3,7 @@ minetest.register_node("nodes:anvil", {
 	tiles = {"nodes_iron.png"},
 	drawtype = "nodebox",
 	paramtype = "light",
-	groups = {unbreakable = 1, loadme = 1},
+	groups = {unbreakable = 1, loadme = 1, overrides_pointable = 1},
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
 
@@ -28,7 +28,7 @@ minetest.register_node("nodes:forge", {
 	tiles = {"nodes_iron.png"},
 	drawtype = "nodebox",
 	paramtype = "light",
-	groups = {unbreakable = 1, loadme = 1},
+	groups = {unbreakable = 1, loadme = 1, overrides_pointable = 1},
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
 

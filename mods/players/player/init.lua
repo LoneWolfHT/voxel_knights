@@ -11,10 +11,11 @@ end)
 --
 
 local dirs = { -- Lua files to include
+	"experience.lua",
+	"hp.lua",
 	"inventory.lua",
 	"hud_info.lua",
 	"gold.lua",
-	"experience.lua",
 	"regen.lua",
 	"model.lua"
 }

@@ -1,6 +1,6 @@
 vkore = {
 	settings = {
-		game_mode = "dev",
+		game_mode = "play", -- dev, regular
 		world_size = 3200,
 	},
 }
@@ -51,8 +51,13 @@ end
 minetest.register_on_mods_loaded(function()
 	for name, def in pairs(minetest.registered_nodes) do
 		if not def.groups then def.groups = {} end
+		local pointable = true
 		def.groups.all = 1
 
-		minetest.override_item(name, {groups = def.groups})
+		if vkore.settings.game_mode == "play" and def.groups.overrides_pointable ~= 1 then
+			pointable = false
+		end
+
+		minetest.override_item(name, {pointable = pointable, groups = def.groups})
 	end
 end)

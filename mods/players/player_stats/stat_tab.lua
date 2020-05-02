@@ -50,6 +50,10 @@ sfinv.register_page("sfinv:stats", {
 				if available_statpoints > 0 and statcount < 100 then
 					meta:set_int("available_statpoints", available_statpoints - 1)
 					meta:set_int(stat, statcount + 1)
+
+					if stat == "strength" then
+						players.update_max_hp(player)
+					end
 				end
 
 				sfinv.set_page(player, context.page)

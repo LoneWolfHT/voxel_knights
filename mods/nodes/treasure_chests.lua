@@ -6,7 +6,7 @@ function nodes.register_lootbox(name, def)
 			"nodes_chest_side.png", "nodes_chest_side.png",
 			"nodes_chest_back.png", "nodes_chest_front.png"
 		},
-		groups = {unbreakable = 1, loadme = 1, lootbox = 1},
+		groups = {unbreakable = 1, loadme = 1, lootbox = 1, overrides_pointable = 1},
 		paramtype = "light",
 		paramtype2 = "facedir",
 		on_construct = function(pos)
