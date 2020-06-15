@@ -5,7 +5,7 @@ globals = {
 }
 
 read_globals = {
-	"minetest", "sfinv", "sscsm",
+	"minetest", "sfinv",
 	string = {fields = {"split"}},
 	table = {fields = {"copy", "getn"}},
 	math = {fields = {"round"}},
@@ -23,5 +23,4 @@ exclude_files = {
 	"mods/sfinv/",
 	"mods/screwdriver2/",
 	"mods/creative/",
-	"mods/sscsm/",
 }

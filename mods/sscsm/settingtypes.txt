@@ -1,2 +1,0 @@
-sscsm.prompt (Prompt users to download CSM counterpart at join) bool true
-sscsm.force (Deny users without CSM counterpart) bool false
