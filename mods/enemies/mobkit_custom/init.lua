@@ -50,7 +50,9 @@ function mobkit_custom.on_punch(self, puncher, t_f_l_p, toolcaps, dir)
 			damage = damage + (val * tflp_calc * ((self.object:get_armor_groups()[group] or 0) / 100.0))
 		end
 
-		minetest.log(("player '%s' deals %f damage to object '%s'"):format(self.puncher or "!", damage, dump(self.name)))
+		minetest.log("action",
+			("player '%s' deals %f damage to object '%s'"):format(self.puncher or "!", damage, dump(self.name))
+		)
 
 		self.hp = self.hp - damage
 
