@@ -77,7 +77,7 @@ minetest.register_abm({
 	label = "Activate enemy dungeon spawners",
 	name = "spawners:activate_overworld_spawners",
 	nodenames = {"group:overworld_spawner"},
-	interval = 1, -- Run every minute
+	interval = 60, -- Run every minute
 	chance = 1,
 	catch_up = false,
 	action = function(pos, node)
