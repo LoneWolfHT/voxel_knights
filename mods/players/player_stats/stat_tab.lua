@@ -47,12 +47,14 @@ sfinv.register_page("sfinv:stats", {
 				local statcount = meta:get_int(stat)
 				local available_statpoints = meta:get_int("available_statpoints")
 
-				if available_statpoints > 0 and statcount < 100 then
+				if available_statpoints > 0 and statcount < player_stats.stat_limit then
 					meta:set_int("available_statpoints", available_statpoints - 1)
 					meta:set_int(stat, statcount + 1)
 
 					if stat == "strength" then
 						players.update_max_hp(player)
+					elseif stat == "dexterity" then
+						player_stats.update_movement_speed(player)
 					end
 				end
 
