@@ -12,7 +12,7 @@ function nodes.register_door(name, desc, texture, on_rightclick, infotext)
 				{0, 0.5, -0.25, 0.375, 0.625, 0.25}, -- knob
 			}
 		},
-		groups = {unbreakable = 1, door = 1},
+		groups = {unbreakable = 1, door = 1, overrides_pointable = 1},
 		on_rightclick = on_rightclick,
 		on_construct = function(pos)
 			local meta = minetest.get_meta(pos)
