@@ -3,6 +3,7 @@ vkore = {
 		game_mode = "play", -- dev, play
 		world_size = 3200,
 	},
+	dev_priv = "voxel_knights_dev"
 }
 
 local dirs = {
@@ -46,6 +47,12 @@ function vkore.scan_flood(pos, range, func)
 		q = nxt
 	end
 end
+
+minetest.register_privilege("voxel_knights_dev", {
+	description = "Allows usage of dev commands",
+	give_to_singleplayer = false,
+	give_to_admin = true,
+})
 
 -- add 'all' group to all registered nodes for use with group-based builtin functions like find_nodes_in_area()
 minetest.register_on_mods_loaded(function()
