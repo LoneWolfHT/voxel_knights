@@ -6,21 +6,33 @@ minetest.register_on_joinplayer(function(player)
 	players.set_max_hp(player, max_hp)
 end)
 
+minetest.register_on_newplayer(function(player)
+	minetest.after(0.1, function()
+		if player then
+			player:set_hp(players.get_max_hp(player))
+		end
+	end)
+end)
+
+function players.get_max_hp(player)
+	local meta = player:get_meta()
+
+	return meta:get_int("max_hp") + (meta:get_int("strength") * 5) + (meta:get_int("level") * 10)
+end
+
 function players.set_max_hp(player, new_max)
 	local meta = player:get_meta()
-	local stat_hp = meta:get_int("strength") * (meta:get_int("level") * 5)
-
-	player:set_properties({hp_max = new_max + stat_hp})
-	hb.change_hudbar(player, "health", player:get_hp(), new_max + stat_hp)
 	meta:set_int("max_hp", new_max)
+
+	players.update_max_hp(player)
 end
 
 function players.update_max_hp(player)
 	local meta = player:get_meta()
 	local max_hp = meta:get_int("max_hp")
-	local stat_hp = (meta:get_int("strength") * 5) + (meta:get_int("level") * 10)
+	local new_max = players.get_max_hp(player)
 
-	player:set_properties({hp_max = max_hp + stat_hp})
-	hb.change_hudbar(player, "health", player:get_hp(), max_hp + stat_hp)
+	player:set_properties({hp_max = new_max})
+	hb.change_hudbar(player, "health", player:get_hp(), new_max)
 	meta:set_int("max_hp", max_hp)
 end
