@@ -1,11 +1,11 @@
-minetest.register_tool("swords:sword", {
+swords = {}
+
+dofile(minetest.get_modpath(minetest.get_current_modname()).."/api.lua")
+
+swords.register_sword("swords:sword", {
 	description = "A basic sword",
-	inventory_image = "swords_sword.png",
-	groups = {sword = 1},
-	wield_scale = vector.new(2, 2.5, 1.5),
-	tool_capabilities = {
-		full_punch_interval = 1.5,
-		damage_groups = {fleshy = 2},
-		punch_attack_uses = 0,
-	},
+	texture = "swords_sword.png",
+	damage = {fleshy = 3},
+	speed = 1.5,
+	glow = 1
 })

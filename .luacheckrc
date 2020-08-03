@@ -1,7 +1,7 @@
 globals = {
 	"vkore", "player_stats", "hb", "players", "gold",
 	"party", "nodes", "mapgen", "spawners", "pathfinder",
-	"mobkit", "mobkit_custom",
+	"mobkit", "mobkit_custom", "swords"
 }
 
 read_globals = {

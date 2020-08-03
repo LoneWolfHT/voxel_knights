@@ -33,22 +33,31 @@ function mobkit.hq_die(self)
 	old_mobkit_hq_die(self)
 end
 
-function mobkit_custom.on_punch(self, puncher, t_f_l_p, toolcaps, dir)
+function mobkit_custom.on_punch(self, puncher, lastpunch, toolcaps, dir)
 	if puncher:is_player() then
 		self.puncher = puncher:get_player_name()
 	end
 
 	if toolcaps.damage_groups then
 		local damage = math.ceil(puncher:get_meta():get_int("strength")/2)
+		local min_damage = damage
+		local max_damage = damage
+		local on_hit = minetest.registered_items[puncher:get_wielded_item():get_name()].on_hit
+
 
 		for group, val in pairs(toolcaps.damage_groups) do
-			local tflp_calc = t_f_l_p / toolcaps.full_punch_interval
+			local tflp_calc = lastpunch / toolcaps.full_punch_interval
 
 			if tflp_calc < 0.0 then tflp_calc = 0.0 end
 			if tflp_calc > 1.0 then tflp_calc = 1.0 end
 
+			-- Increase max_damage if sword group matches mob group
+			max_damage = max_damage + (val * ((self.object:get_armor_groups()[group] or 0) / 100.0))
+
 			damage = damage + (val * tflp_calc * ((self.object:get_armor_groups()[group] or 0) / 100.0))
 		end
+
+		if on_hit then on_hit(self.object:get_pos(), {min=min_damage,dmg=damage, max=max_damage}, dir or puncher:get_look_dir()) end
 
 		minetest.log("action",
 			("player '%s' deals %f damage to object '%s'"):format(self.puncher or "!", damage, dump(self.name))
@@ -58,9 +67,9 @@ function mobkit_custom.on_punch(self, puncher, t_f_l_p, toolcaps, dir)
 
 		if dir then
 			dir.y = 0.6
-			if t_f_l_p > 1 then t_f_l_p = 1 end
+			if lastpunch > 1 then lastpunch = 1 end
 
-			self.object:add_velocity(vector.multiply(dir, t_f_l_p*4))
+			self.object:add_velocity(vector.multiply(dir, lastpunch*4))
 		end
 	end
 end
