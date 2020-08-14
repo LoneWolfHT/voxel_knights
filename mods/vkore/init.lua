@@ -1,6 +1,6 @@
 vkore = {
 	settings = {
-		game_mode = "play", -- dev, play
+		game_mode = "dev", -- dev, play
 		world_size = 3200,
 	},
 	dev_priv = "voxel_knights_dev"
@@ -66,5 +66,12 @@ minetest.register_on_mods_loaded(function()
 		end
 
 		minetest.override_item(name, {pointable = pointable, groups = def.groups})
+	end
+
+	-- Backwards compat
+	for name in pairs(minetest.registered_items) do
+		if name:find("vk_") then
+			minetest.register_alias(name:sub(4), name)
+		end
 	end
 end)
