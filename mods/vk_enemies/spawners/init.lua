@@ -52,14 +52,19 @@ function spawners.register_overworld_spawner(entity, enemies_per_spawner, biomes
 		light_source = 1,
 		groups = {overworld_spawner = 1},
 		enemies_per_spawner = enemies_per_spawner,
-		trigger = func or function(pos)
+		trigger = func or function(pos, mobs_to_spawn)
+			if mobs_to_spawn <= 0 then return end
+
 			local nodes_near = minetest.find_nodes_in_area_under_air(
 				vector.add(pos, SPAWNER_RADIUS),
 				vector.subtract(pos, SPAWNER_RADIUS),
 				"group:all"
 			)
 
-			minetest.add_entity(nodes_near[math.random(1, #nodes_near)], entity)
+			while mobs_to_spawn > 0 do
+				minetest.add_entity(nodes_near[math.random(1, #nodes_near)], entity)
+				mobs_to_spawn = mobs_to_spawn - 1
+			end
 		end,
 	})
 
@@ -73,13 +78,11 @@ function spawners.register_overworld_spawner(entity, enemies_per_spawner, biomes
 	})
 end
 
-minetest.register_abm({
-	label = "Activate enemy dungeon spawners",
+minetest.register_lbm({
+	label = "Activate enemy overworld spawners",
 	name = "spawners:activate_overworld_spawners",
 	nodenames = {"group:overworld_spawner"},
-	interval = 60, -- Run every minute
-	chance = 1,
-	catch_up = false,
+	run_at_every_load = true,
 	action = function(pos, node)
 		local objs_in_area = minetest.get_objects_inside_radius(pos, SPAWNER_RADIUS+5)
 		local nodedef = minetest.registered_nodes[node.name]
@@ -91,8 +94,6 @@ minetest.register_abm({
 			end
 		end
 
-		if #objs_in_area < nodedef.enemies_per_spawner then
-			nodedef.trigger(pos)
-		end
+		nodedef.trigger(pos, nodedef.enemies_per_spawner - #objs_in_area)
 	end
 })
