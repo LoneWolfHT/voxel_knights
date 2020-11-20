@@ -1,0 +1,2 @@
+# Options: play, dev
+vkore_game_mode (Game Mode) string play
