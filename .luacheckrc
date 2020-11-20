@@ -1,13 +1,13 @@
 globals = {
 	"vkore", "player_stats", "hb", "players", "gold",
 	"party", "nodes", "mapgen", "spawners", "pathfinder",
-	"mobkit", "mobkit_custom", "swords"
+	"mobkit", "mobkit_custom", "swords", "vk_quests", "vk_quest",
 }
 
 read_globals = {
 	"minetest", "sfinv",
 	string = {fields = {"split"}},
-	table = {fields = {"copy", "getn"}},
+	table = {fields = {"copy", "getn", "indexof",}},
 	math = {fields = {"round"}},
 
 	-- Builtin
