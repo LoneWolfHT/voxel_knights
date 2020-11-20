@@ -75,3 +75,5 @@ minetest.register_on_mods_loaded(function()
 		end
 	end
 end)
+
+dofile(minetest.get_modpath("vkore").."/helpers.lua")
