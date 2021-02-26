@@ -17,7 +17,7 @@ local dirs = { -- Lua files to include
 	"hud_info.lua",
 	"gold.lua",
 	"regen.lua",
-	"model.lua"
+	"model.lua",
 }
 
 for _, filename in ipairs(dirs) do
