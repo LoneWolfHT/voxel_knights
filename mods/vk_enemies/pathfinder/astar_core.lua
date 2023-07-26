@@ -1,5 +1,5 @@
 -- LUALOCALS < ---------------------------------------------------------
-local next, pairs
+local _, pairs
     = next, pairs
 -- LUALOCALS > ---------------------------------------------------------
 
@@ -22,7 +22,7 @@ Returns:
 	  Nil if pathfinding failed entirely, or already at goal.
 	- Truthy if a real solution was found, falsey if path is a
 	  partial estimated solution based on heuristic.
-	- Total real cost of solution path given.  
+	- Total real cost of solution path given.
 	- Number of maxpts NOT consumed by the search.
 --]]
 
@@ -78,7 +78,7 @@ local function astar(start, heur, maxpts, edgecost, neigh)
 
 			local curptcost = costs[curpt]
 			for n in neigh(curpt) do
-				repeat	
+				repeat
 					if closed[n] then break end
 					local newcost = curptcost + edgecost(curpt, n)
 					local oldcost = costs[n]

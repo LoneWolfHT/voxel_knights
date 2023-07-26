@@ -1,7 +1,11 @@
+unused_args = false
+max_line_length = false
+
 globals = {
 	"vkore", "player_stats", "hb", "players", "gold",
 	"party", "nodes", "mapgen", "spawners", "pathfinder",
 	"mobkit", "mobkit_custom", "swords", "vk_quests", "vk_quest",
+	"rhotator", "matrix", "dungeons"
 }
 
 read_globals = {
@@ -23,4 +27,5 @@ exclude_files = {
 	"mods/sfinv/",
 	"mods/screwdriver2/",
 	"mods/creative/",
+	"mods/luamatrix/"
 }

@@ -39,7 +39,7 @@ local function get_multi_action(playername, primary, sneak)
 		if not logic_sneak then
 			return {"memory", "Cycles through memory modes"}
 		else
-			return {"copy", "Copies rotation from pointed-to node"} 
+			return {"copy", "Copies rotation from pointed-to node"}
 		end
 	end
 end
@@ -160,10 +160,6 @@ local function extract_unit_vectors(player, pointed_thing)
 	local abs_face_pos = minetest.pointed_thing_to_face_pos(player, pointed_thing)
 	local pos = pointed_thing.under
 	local f = vector.subtract(abs_face_pos, pos)
-	local facedir = 0
-	local primary = 0
-
-	local m1, m2
 
 	local unit_direction = vector.new()
 	local unit_rotation = vector.new()
@@ -264,10 +260,9 @@ end
 
 local function rotate_main(param2_rotation, player, pointed_thing, click, rot_index, sneak)
 	local unit = extract_unit_vectors(player, pointed_thing)
-	local current_pos = pointed_thing.under
 
 	local message
-	local transform = false
+	local transform
 	local rotation = rot_matrices[rot_index]
 
 	if click == PRIMARY_BTN then
@@ -400,7 +395,7 @@ local function rhotator_on_placenode(pos, newnode, player, oldnode, itemstack, p
 		if not copy_rotation_callback(true, player, pointed_thing) then return end
 		memory = ON
 	end
-	
+
 	local new_rotation = facedir_memory[playername]
 	if memory == ON and not new_rotation then
 		notify(player, "Default placement (no stored rotation)")
@@ -412,22 +407,22 @@ local function rhotator_on_placenode(pos, newnode, player, oldnode, itemstack, p
 		notify.warning(player, "Unregistered node placed")
 		return
 	end
-	
+
 	local paramtype2 = nodedef.paramtype2
 
 	if paramtype2 ~= "facedir" and paramtype2 ~= "colorfacedir" then
 		notify.warning(player, "Default placement (can't rotate nodes of this type)")
 		return
 	end
-	
+
 	local old_rotation = newnode.param2 % 32 -- get first 5 bits
 	local remaining = newnode.param2 - old_rotation
 	local new_param2 = new_rotation + remaining
-	
+
 	local click = SECONDARY_BTN
-	
+
 	if not rhotator.check_on_rotate_handler(pos, newnode, nodedef, player, click, new_param2) then return end
-	
+
 	newnode.param2 = new_param2
 	minetest.swap_node(pos, newnode)
 	minetest.check_for_falling(pos)
@@ -512,9 +507,9 @@ local function interact(player, pointed_thing, click, sneak)
 	end
 
 	local new_param2, handler_message = handler(node, player, pointed_thing, click, sneak)
-	
+
 	if not rhotator.check_on_rotate_handler(pos, node, nodedef, player, click, new_param2) then return end
-	
+
 	node.param2 = new_param2
 	minetest.swap_node(pos, node)
 	minetest.check_for_falling(pos)
@@ -572,7 +567,6 @@ copy_rotation_callback = function(itemstack, player, pointed_thing)
 	if pointed_thing.type ~= "node" then
 		return
 	end
-	local pos = pointed_thing.under
 	local node = minetest.get_node(pointed_thing.under)
 	local nodedef = minetest.registered_nodes[node.name]
 
@@ -580,10 +574,10 @@ copy_rotation_callback = function(itemstack, player, pointed_thing)
 		notify.error(player, "Unsupported node type: " .. node.name)
 		return
 	end
-	
+
 	local paramtype2 = nodedef.paramtype2
 
-	if paramtype2 ~= "facedir" and paramtype2 ~= "colorfacedir" then 
+	if paramtype2 ~= "facedir" and paramtype2 ~= "colorfacedir" then
 		notify.warning(player, "Unsupported node type: " .. node.name .. " - cannot copy rotation")
 		return
 	end
@@ -618,19 +612,19 @@ minetest.register_tool("rhotator:memory", {
 local function multi_callback(itemstack, player, pointed_thing, button)
 	local playername = player and player:get_player_name() or ""
 	local primary = button == PRIMARY_BTN
-	local sneak = player and player:get_player_control().sneak	
+	local sneak = player and player:get_player_control().sneak
 	local action = get_multi_action(playername, primary, sneak)[1]
-	
+
 	if action == "memory" then
-		toggle_memory_callback(itemstack, player, pointed_thing)	
+		toggle_memory_callback(itemstack, player, pointed_thing)
 	elseif action == "copy" then
 		copy_rotation_callback(itemstack, player, pointed_thing)
 	elseif action == "rotate" then
 		interact(player, pointed_thing, SECONDARY_BTN, false)
 	elseif action == "push" then
-		interact(player, pointed_thing, PRIMARY_BTN, false)	
+		interact(player, pointed_thing, PRIMARY_BTN, false)
 	else
-		notify.error(playername, "Get a better developer") 
+		notify.error(playername, "Get a better developer")
 	end
 end
 

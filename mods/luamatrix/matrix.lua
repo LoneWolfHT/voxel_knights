@@ -3,14 +3,14 @@
 LUA MODULE
 
   matrix v$(_VERSION) - matrix functions implemented with Lua tables
-	
+
 SYNOPSIS
 
   local matrix = require 'matrix'
   m1 = matrix{{8,4,1},{6,8,3}}
   m2 = matrix{{-8,1,3},{5,2,1}}
   assert(m1 + m2 == matrix{{0,5,4},{11,10,4}})
-  
+
 DESCRIPTION
 
   With simple matrices this script is quite useful, though for more
@@ -18,9 +18,9 @@ DESCRIPTION
   Matrices of size 100x100 can still be handled very well.
   The error for the determinant and the inverted matrix is around 10^-9
   with a 100x100 matrix and an element range from -100 to 100.
- 	
+
    Characteristics:
-	
+
 	- functions called via matrix.<function> should be able to handle
 	  any table matrix of structure t[i][j] = value
 	- can handle a type of complex matrix
@@ -39,7 +39,7 @@ DESCRIPTION
 	  or use num = vec1:scalar( vec2 ), where num is a number
 
 API
-	
+
 	matrix function list:
 
 	matrix.add
@@ -83,7 +83,7 @@ API
 	matrix.tostring
 	matrix.transpose
 	matrix.type
-	
+
 	See code and test_matrix.lua.
 
 DEPENDENCIES
@@ -100,11 +100,11 @@ DOWNLOAD/INSTALL
   ./util.mk
   cd tmp/*
   luarocks make
-  
+
 LICENSE
-  
+
   Licensed under the same terms as Lua itself.
-	
+
   Developers:
     Michael Lutz (chillcode) - original author
     David Manura http://lua-users.org/wiki/DavidManura
