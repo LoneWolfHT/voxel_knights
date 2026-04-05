@@ -42,10 +42,13 @@ minetest.register_lbm({
 	end,
 })
 
-function spawners.register_overworld_spawner(entity, enemies_per_spawner, biomes, func)
+--TODO If we add any more args to this we should maybe collapse all the misc args into a table, making the function
+-- get called similar to minetest.register_node(), which you can see has 2 args, a string and table
+function spawners.register_overworld_spawner(entity, enemies_per_spawner, biomes, func, fill_ratio)
 	minetest.register_node(entity .. "_overworld_spawner", {
 		description = "Enemy spawner ("..entity..")",
 		drawtype = "airlike",
+		--tiles = {"spawners_dungeon_spawner.png"},
 		paramtype = "light",
 		sunlight_propagates = false,
 		walkable = false,
@@ -72,8 +75,8 @@ function spawners.register_overworld_spawner(entity, enemies_per_spawner, biomes
 		deco_type = "simple",
 		place_on = "vk_nodes:grass",
 		decoration = entity .. "_overworld_spawner",
-		fill_ratio = 0.00005,
-		biomes = {"green_biome"},
+		fill_ratio = fill_ratio or 0.00005,
+		biomes = biomes or {"green_biome"},
 		flags = "force_placement, all_floors",
 	})
 end

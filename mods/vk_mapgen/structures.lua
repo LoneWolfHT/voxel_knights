@@ -85,6 +85,7 @@ minetest.register_lbm({
 		if result == true then
 			mapgen.new_structure(schemname, pos)
 			minetest.log("action", "Spawned structure " .. schemname .. " at "..minetest.pos_to_string(pos))
+			mapgen.populate_structure(schemname, pos, structure.radius)
 		elseif vkore.settings.game_mode == "dev" then
 			minetest.log("error",
 				"Failed to spawn structure " .. schemname .. " at " .. minetest.pos_to_string(pos) ..
@@ -118,6 +119,30 @@ function mapgen.new_structure(schemname, pos)
 	mods:set_string("structures", minetest.serialize(mapgen.structures))
 end
 
+function mapgen.populate_structure(schemname, structurepos, radius)
+	minetest.log("info", "Running populate_structure.")
+	local poslist = minetest.find_nodes_in_area_under_air(
+		vector.add(structurepos, radius),
+		vector.subtract(structurepos, radius),
+		"vk_npcs:tavern_keeper"
+	)
+	for i = 1, #poslist do
+		local pos = poslist[i]
+		local node = minetest.get_node(pos)
+		if (node.name == "vk_npcs:tavern_keeper") then
+			minetest.log("info", "Found a tavern keeper at: "..dump(pos))
+			-- Need to remove her and add a marker
+			minetest.remove_node(pos)
+			minetest.remove_node( {x = pos.x, y = (pos.y + 1), z = pos.z} )
+			minetest.set_node( {x = pos.x, y = pos.y + 4, z = pos.z}, { name = "vk_npcs:tavern_marker" })
+			-- Add her back as an npcmob that can walk around, but stands still initially
+			local staticdata = {waiting = true, npcname = "tavern_keeper"}
+			minetest.add_entity({x = pos.x, y = (pos.y + 1), z = pos.z}, "vk_npcs:tavern_keeper", minetest.serialize(staticdata))
+			return 1
+		end
+	end
+end
+
 mapgen.register_structure("town1", {
 	rarity = 0.00005,
 	radius = 40,
@@ -129,3 +154,4 @@ mapgen.register_structure("town1", {
 -- 	radius = 7,
 -- 	bubble = 25,
 -- })
+

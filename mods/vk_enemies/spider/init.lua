@@ -67,6 +67,9 @@ minetest.register_entity("spider:spider", {
 		mobkit.actfunc(self, staticdata, dtime_s)
 	end,
 	get_staticdata = mobkit.statfunc,
+	on_deactivate = function(self)
+		mobkit_custom.deactfunc(self)
+	end,
 	logic = function(self)
 		mobkit.vitals(self)
 
